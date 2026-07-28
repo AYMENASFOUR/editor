@@ -17,12 +17,9 @@ export {
   LOCALE_DIRECTION,
   LOCALE_STORAGE_KEY,
 } from './types'
-export {
-  I18nProvider,
-  type TranslateFn,
-  type TranslationKey,
-  useI18n,
-  useTranslate,
-} from './i18n-context'
+export { I18nProvider, useI18n, useTranslate } from './i18n-context'
 export { ar } from './messages/ar'
 export { en, type Messages } from './messages/en'
+// Translation function/key types + a framework-free translator factory (usable
+// from Server Components).
+export { createTranslator, type TranslateFn, type TranslationKey } from './translate'

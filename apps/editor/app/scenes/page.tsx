@@ -2,6 +2,7 @@ import { headers } from 'next/headers'
 import Link from 'next/link'
 import { CreateSceneButton } from '@/components/save-button'
 import type { SceneMeta } from '@/components/scene-loader'
+import { getServerT } from '@/lib/locale'
 
 export const dynamic = 'force-dynamic'
 
@@ -43,6 +44,7 @@ function formatDate(iso: string): string {
 
 export default async function ScenesPage() {
   const scenes = await fetchScenes()
+  const t = await getServerT()
 
   return (
     <div className="min-h-screen bg-background">
@@ -53,26 +55,26 @@ export default async function ScenesPage() {
               className="text-muted-foreground transition-colors hover:text-foreground"
               href="/"
             >
-              Home
+              {t('pages.home')}
             </Link>
             <span className="text-muted-foreground">/</span>
-            <span className="font-medium text-foreground">Scenes</span>
+            <span className="font-medium text-foreground">{t('pages.scenes.title')}</span>
           </nav>
           <CreateSceneButton />
         </div>
       </header>
 
       <main className="container mx-auto max-w-5xl px-6 py-12">
-        <h1 className="mb-2 font-bold text-3xl">Your scenes</h1>
+        <h1 className="mb-2 font-bold text-3xl">{t('pages.scenes.heading')}</h1>
         <p className="mb-8 text-muted-foreground text-sm">
           {scenes.length === 0
-            ? 'No scenes yet. Create one to get started.'
-            : `${scenes.length} scene${scenes.length === 1 ? '' : 's'}.`}
+            ? t('pages.scenes.empty')
+            : t('pages.scenes.count', { count: scenes.length })}
         </p>
 
         {scenes.length === 0 ? (
           <div className="rounded-xl border border-border/60 border-dashed bg-background p-12 text-center">
-            <p className="text-muted-foreground text-sm">You haven&apos;t saved any scenes yet.</p>
+            <p className="text-muted-foreground text-sm">{t('pages.scenes.noneSaved')}</p>
             <div className="mt-4 flex justify-center">
               <CreateSceneButton />
             </div>
@@ -94,7 +96,9 @@ export default async function ScenesPage() {
                         src={scene.thumbnailUrl}
                       />
                     ) : (
-                      <span className="text-muted-foreground text-xs">No thumbnail</span>
+                      <span className="text-muted-foreground text-xs">
+                        {t('pages.scenes.noThumbnail')}
+                      </span>
                     )}
                   </div>
                   <div className="mt-3">
@@ -102,7 +106,7 @@ export default async function ScenesPage() {
                       {scene.name}
                     </h2>
                     <div className="mt-1 flex items-center justify-between text-muted-foreground text-xs">
-                      <span>{scene.nodeCount} nodes</span>
+                      <span>{t('pages.scenes.nodeCount', { count: scene.nodeCount })}</span>
                       <time dateTime={scene.updatedAt}>{formatDate(scene.updatedAt)}</time>
                     </div>
                   </div>

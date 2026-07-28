@@ -13,8 +13,8 @@ import {
   useMemo,
   useState,
 } from 'react'
-import { ar } from './messages/ar'
-import { en, type Messages } from './messages/en'
+import { en } from './messages/en'
+import { createTranslator, interpolate, resolve, type TranslateFn } from './translate'
 import {
   DEFAULT_LOCALE,
   type Direction,
@@ -23,45 +23,6 @@ import {
   LOCALE_STORAGE_KEY,
   type Locale,
 } from './types'
-
-const CATALOGS: Record<Locale, Messages> = { en, ar }
-
-// All dotted leaf paths of the message catalog, e.g. `'settings.language.label'`.
-// Gives `t()` autocomplete and rejects typos at compile time.
-type Leaves<T> = T extends string
-  ? ''
-  : {
-      [K in keyof T & string]: Leaves<T[K]> extends infer R extends string
-        ? R extends ''
-          ? K
-          : `${K}.${R}`
-        : never
-    }[keyof T & string]
-
-export type TranslationKey = Leaves<Messages>
-
-type Vars = Record<string, string | number>
-
-function resolve(catalog: Messages, key: string): string | undefined {
-  let node: unknown = catalog
-  for (const part of key.split('.')) {
-    if (node && typeof node === 'object' && part in (node as object)) {
-      node = (node as Record<string, unknown>)[part]
-    } else {
-      return undefined
-    }
-  }
-  return typeof node === 'string' ? node : undefined
-}
-
-function interpolate(template: string, vars?: Vars): string {
-  if (!vars) return template
-  return template.replace(/\{(\w+)\}/g, (match, name: string) =>
-    name in vars ? String(vars[name]) : match,
-  )
-}
-
-export type TranslateFn = (key: TranslationKey, vars?: Vars) => string
 
 type I18nContextValue = {
   locale: Locale
@@ -111,13 +72,7 @@ export function I18nProvider({
     root.dir = LOCALE_DIRECTION[locale]
   }, [locale])
 
-  const t = useCallback<TranslateFn>(
-    (key, vars) => {
-      const value = resolve(CATALOGS[locale], key) ?? resolve(CATALOGS.en, key) ?? key
-      return interpolate(value, vars)
-    },
-    [locale],
-  )
+  const t = useMemo<TranslateFn>(() => createTranslator(locale), [locale])
 
   const value = useMemo<I18nContextValue>(
     () => ({ locale, dir: LOCALE_DIRECTION[locale], setLocale, t }),
