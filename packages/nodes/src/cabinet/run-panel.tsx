@@ -12,8 +12,7 @@ import {
   PanelWrapper,
   SegmentedControl,
   SliderControl,
-  ToggleControl,
-} from '@pascal-app/editor'
+  ToggleControl, useI18n, type TranslateFn} from '@pascal-app/editor'
 import { useViewer } from '@pascal-app/viewer'
 import { Plus, Trash } from 'lucide-react'
 import { useCallback, useMemo } from 'react'
@@ -46,37 +45,37 @@ const RUN_MODULE_SYNC_PATCH_KEYS = new Set<keyof CabinetNodeType>([
 const RUN_DEPTH_PATCH_KEY = 'depth'
 const PRESET_WIDTH_DEBT_KEY = 'cabinetPresetWidthDebtBySource'
 
-const FRONT_STYLE_OPTIONS = [
-  { value: 'slab', label: 'Slab' },
-  { value: 'shaker', label: 'Shaker' },
-  { value: 'raised-arch', label: 'Raised Arch' },
+const FRONT_STYLE_OPTIONS = (t: TranslateFn) => [
+  { value: 'slab', label: t('np.slab') },
+  { value: 'shaker', label: t('np.shaker') },
+  { value: 'raised-arch', label: t('np.raisedArch') },
 ] as const
 
-const FRONT_OVERLAY_OPTIONS = [
-  { value: 'full', label: 'Overlay' },
-  { value: 'inset', label: 'Inset' },
+const FRONT_OVERLAY_OPTIONS = (t: TranslateFn) => [
+  { value: 'full', label: t('np.overlay') },
+  { value: 'inset', label: t('np.inset') },
 ] as const
 
-const HANDLE_STYLE_OPTIONS = [
-  { value: 'bar', label: 'Bar' },
-  { value: 'knob', label: 'Knob' },
-  { value: 'cutout', label: 'Cutout' },
-  { value: 'hole', label: 'Hole' },
-  { value: 'none', label: 'None' },
+const HANDLE_STYLE_OPTIONS = (t: TranslateFn) => [
+  { value: 'bar', label: t('np.bar') },
+  { value: 'knob', label: t('np.knob') },
+  { value: 'cutout', label: t('np.cutout') },
+  { value: 'hole', label: t('np.hole') },
+  { value: 'none', label: t('np.none') },
 ] as const
 
-const HANDLE_POSITION_OPTIONS = [
-  { value: 'auto', label: 'Auto' },
-  { value: 'top', label: 'Top' },
-  { value: 'center', label: 'Center' },
+const HANDLE_POSITION_OPTIONS = (t: TranslateFn) => [
+  { value: 'auto', label: t('np.auto') },
+  { value: 'top', label: t('np.top') },
+  { value: 'center', label: t('np.center') },
 ] as const
 
-function moduleSummary(module: CabinetModuleNodeType) {
-  if ((module.cabinetType ?? 'base') === 'tall') return 'Tall cabinet'
+function moduleSummary(module: CabinetModuleNodeType, t: TranslateFn) {
+  if ((module.cabinetType ?? 'base') === 'tall') return t('np.tallCabinet')
   const stack = stackForCabinet(module)
-  if (stack.length === 0) return 'Empty'
+  if (stack.length === 0) return t('np.empty')
   if (stack.length === 1) return stack[0]!.type
-  return `${stack.length} compartments`
+  return `${stack.length} ${t('np.compartments')}`
 }
 
 export function bumpRunLayoutRevisionViaStore(
@@ -206,6 +205,7 @@ export function CabinetRunPanel({
   modules: CabinetModuleNodeType[]
   onClose: () => void
 }) {
+  const { t } = useI18n()
   const setSelection = useViewer((s) => s.setSelection)
   const sortedModules = useMemo(
     () => [...modules].sort((a, b) => a.position[0] - b.position[0]),
@@ -331,10 +331,10 @@ export function CabinetRunPanel({
     <PanelWrapper
       icon="/icons/item.webp"
       onClose={onClose}
-      title={node.name || 'Modular Cabinet'}
+      title={node.name || t('np.modularCabinet')}
       width={320}
     >
-      <PanelSection title="Modules">
+      <PanelSection title={t('np.modules')}>
         <div className="flex flex-col gap-2 px-1 pb-2">
           {sortedModules.map((module, index) => (
             <div
@@ -347,10 +347,10 @@ export function CabinetRunPanel({
                 type="button"
               >
                 <div className="truncate text-xs font-medium text-foreground">
-                  {module.name || `Module ${index + 1}`}
+                  {module.name || `${t('np.module')} ${index + 1}`}
                 </div>
                 <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
-                  {moduleSummary(module)}
+                  {moduleSummary(module, t)}
                 </div>
               </button>
               <button
@@ -368,22 +368,22 @@ export function CabinetRunPanel({
           <div className="grid grid-cols-2 gap-2">
             <ActionButton
               icon={<Plus className="h-4 w-4" />}
-              label="Add left"
+              label={t('np.addLeft')}
               onClick={() => addModule('left')}
             />
             <ActionButton
               icon={<Plus className="h-4 w-4" />}
-              label="Add right"
+              label={t('np.addRight')}
               onClick={() => addModule('right')}
             />
           </div>
         </div>
       </PanelSection>
 
-      <PanelSection title="Shared Plinth & Countertop">
+      <PanelSection title={t('np.sharedPlinthCountertop')}>
         <div className="space-y-2 px-1 pb-2">
           <SliderControl
-            label="Depth"
+            label={t('np.depth')}
             max={1.2}
             min={0.3}
             onChange={(value) => updateRun({ depth: value })}
@@ -393,7 +393,7 @@ export function CabinetRunPanel({
             value={node.depth}
           />
           <SliderControl
-            label="Carcass height"
+            label={t('np.carcassHeight')}
             max={node.runTier === 'tall' ? 2.4 : 1.4}
             min={Math.max(0.4, ...modules.map((module) => minCabinetCarcassHeightForStack(module)))}
             onChange={(value) => updateRun({ carcassHeight: value })}
@@ -404,12 +404,12 @@ export function CabinetRunPanel({
           />
           <ToggleControl
             checked={node.showPlinth}
-            label="Show plinth"
+            label={t('np.showPlinth')}
             onChange={(checked) => updateRun({ showPlinth: checked })}
           />
           {node.showPlinth && (
             <SliderControl
-              label="Plinth height"
+              label={t('np.plinthHeight')}
               max={0.3}
               min={0.02}
               onChange={(value) => updateRun({ plinthHeight: value })}
@@ -421,13 +421,13 @@ export function CabinetRunPanel({
           )}
           <ToggleControl
             checked={node.withCountertop}
-            label="Show countertop"
+            label={t('np.showCountertop')}
             onChange={(checked) => updateRun({ withCountertop: checked })}
           />
           {node.withCountertop && (
             <>
               <SliderControl
-                label="Countertop height"
+                label={t('np.countertopHeight')}
                 max={0.08}
                 min={0.005}
                 onChange={(value) => updateRun({ countertopThickness: value })}
@@ -437,7 +437,7 @@ export function CabinetRunPanel({
                 value={node.countertopThickness}
               />
               <SliderControl
-                label="Countertop depth"
+                label={t('np.countertopDepth')}
                 max={0.12}
                 min={0}
                 onChange={(value) => updateRun({ countertopOverhang: value })}
@@ -451,11 +451,11 @@ export function CabinetRunPanel({
         </div>
       </PanelSection>
 
-      <PanelSection title="Island & Bar">
+      <PanelSection title={t('np.islandBar')}>
         <div className="space-y-2 px-1 pb-2">
           {node.withCountertop && node.barLedge?.edge !== 'back' && (
             <SliderControl
-              label="Seating overhang"
+              label={t('np.seatingOverhang')}
               max={0.45}
               min={0}
               onChange={(value) => updateRun({ countertopBackOverhang: value })}
@@ -467,19 +467,19 @@ export function CabinetRunPanel({
           )}
           <ToggleControl
             checked={node.withFinishedBack}
-            label="Finished back"
+            label={t('np.finishedBack')}
             onChange={(checked) => updateRun({ withFinishedBack: checked })}
           />
           {node.withCountertop && (
             <ToggleControl
               checked={node.withWaterfall}
-              label="Waterfall ends"
+              label={t('np.waterfallEnds')}
               onChange={(checked) => updateRun({ withWaterfall: checked })}
             />
           )}
           <ToggleControl
             checked={Boolean(node.barLedge)}
-            label="Bar counter"
+            label={t('np.barCounter')}
             onChange={(checked) =>
               updateRun({
                 barLedge: checked ? { edge: 'back', height: 1.06, depth: 0.35 } : undefined,
@@ -495,14 +495,14 @@ export function CabinetRunPanel({
                   })
                 }
                 options={[
-                  { value: 'back', label: 'Back' },
-                  { value: 'left', label: 'Left' },
-                  { value: 'right', label: 'Right' },
+                  { value: 'back', label: t('np.back') },
+                  { value: 'left', label: t('np.left') },
+                  { value: 'right', label: t('np.right') },
                 ]}
                 value={node.barLedge.edge}
               />
               <SliderControl
-                label="Bar height"
+                label={t('np.barHeight2')}
                 max={1.3}
                 min={0.9}
                 onChange={(value) => updateRun({ barLedge: { ...node.barLedge!, height: value } })}
@@ -512,7 +512,7 @@ export function CabinetRunPanel({
                 value={node.barLedge.height}
               />
               <SliderControl
-                label="Bar depth"
+                label={t('np.barDepth')}
                 max={0.5}
                 min={0.15}
                 onChange={(value) => updateRun({ barLedge: { ...node.barLedge!, depth: value } })}
@@ -526,17 +526,17 @@ export function CabinetRunPanel({
         </div>
       </PanelSection>
 
-      <PanelSection title="Fronts">
+      <PanelSection title={t('np.fronts')}>
         <div className="space-y-2 px-1 pb-2">
           <div>
             <div className="px-1 pb-1 text-[10px] uppercase tracking-wide text-muted-foreground">
-              Style
+              {t('np.style')}
             </div>
             <SegmentedControl
               onChange={(value) =>
                 updateRun({ frontStyle: value as CabinetNodeType['frontStyle'] })
               }
-              options={FRONT_STYLE_OPTIONS.map((option) => ({
+              options={FRONT_STYLE_OPTIONS(t).map((option) => ({
                 value: option.value,
                 label: option.label,
               }))}
@@ -545,13 +545,13 @@ export function CabinetRunPanel({
           </div>
           <div>
             <div className="px-1 pb-1 text-[10px] uppercase tracking-wide text-muted-foreground">
-              Mounting
+              {t('np.mounting')}
             </div>
             <SegmentedControl
               onChange={(value) =>
                 updateRun({ frontOverlay: value as CabinetNodeType['frontOverlay'] })
               }
-              options={FRONT_OVERLAY_OPTIONS.map((option) => ({
+              options={FRONT_OVERLAY_OPTIONS(t).map((option) => ({
                 value: option.value,
                 label: option.label,
               }))}
@@ -561,17 +561,17 @@ export function CabinetRunPanel({
         </div>
       </PanelSection>
 
-      <PanelSection title="Handles">
+      <PanelSection title={t('np.handles')}>
         <div className="space-y-2 px-1 pb-2">
           <div>
             <div className="px-1 pb-1 text-[10px] uppercase tracking-wide text-muted-foreground">
-              Style
+              {t('np.style')}
             </div>
             <SegmentedControl
               onChange={(value) =>
                 updateRun({ handleStyle: value as CabinetNodeType['handleStyle'] })
               }
-              options={HANDLE_STYLE_OPTIONS.map((option) => ({
+              options={HANDLE_STYLE_OPTIONS(t).map((option) => ({
                 value: option.value,
                 label: option.label,
               }))}
@@ -581,13 +581,13 @@ export function CabinetRunPanel({
           {(node.handleStyle === 'bar' || node.handleStyle === 'knob') && (
             <div>
               <div className="px-1 pb-1 text-[10px] uppercase tracking-wide text-muted-foreground">
-                Position
+                {t('np.position')}
               </div>
               <SegmentedControl
                 onChange={(value) =>
                   updateRun({ handlePosition: value as CabinetNodeType['handlePosition'] })
                 }
-                options={HANDLE_POSITION_OPTIONS.map((option) => ({
+                options={HANDLE_POSITION_OPTIONS(t).map((option) => ({
                   value: option.value,
                   label: option.label,
                 }))}

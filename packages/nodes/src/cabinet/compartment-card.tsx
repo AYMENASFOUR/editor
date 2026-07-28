@@ -1,6 +1,6 @@
 'use client'
 
-import { SegmentedControl, SliderControl, ToggleControl } from '@pascal-app/editor'
+import { SegmentedControl, SliderControl, ToggleControl, useI18n, type TranslateFn} from '@pascal-app/editor'
 import { ArrowDown, ArrowUp, Minus, Plus, Trash } from 'lucide-react'
 import {
   type CabinetCompartment,
@@ -29,69 +29,69 @@ import {
   type SinkLayout,
 } from './stack'
 
-const COMPARTMENT_TYPE_OPTIONS = [
-  { value: 'shelf', label: 'Shelf' },
-  { value: 'drawer', label: 'Drawer' },
-  { value: 'door', label: 'Door' },
-  { value: 'oven', label: 'Oven' },
-  { value: 'microwave', label: 'Micro' },
-  { value: 'dishwasher', label: 'Washer' },
-  { value: 'cooktop', label: 'Hob' },
-  { value: 'sink', label: 'Sink' },
-  { value: 'pull-out-pantry', label: 'Pullout' },
+const COMPARTMENT_TYPE_OPTIONS = (t: TranslateFn) => [
+  { value: 'shelf', label: t('np.shelf') },
+  { value: 'drawer', label: t('np.drawer') },
+  { value: 'door', label: t('np.door') },
+  { value: 'oven', label: t('np.oven') },
+  { value: 'microwave', label: t('np.micro') },
+  { value: 'dishwasher', label: t('np.washer') },
+  { value: 'cooktop', label: t('np.hob') },
+  { value: 'sink', label: t('np.sink') },
+  { value: 'pull-out-pantry', label: t('np.pullout') },
 ] as const
 
-const FRIDGE_TYPE_OPTION = { value: 'fridge', label: 'Fridge' } as const
-const HOOD_TYPE_OPTION = { value: 'hood', label: 'Chimney' } as const
-const COMPARTMENT_TYPE_CONTROL_OPTIONS = [...COMPARTMENT_TYPE_OPTIONS, FRIDGE_TYPE_OPTION] as const
-const WALL_COMPARTMENT_TYPE_CONTROL_OPTIONS = [
-  { value: 'shelf', label: 'Shelf' },
-  { value: 'drawer', label: 'Drawer' },
-  { value: 'door', label: 'Door' },
-  HOOD_TYPE_OPTION,
+const FRIDGE_TYPE_OPTION = (t: TranslateFn) => ({ value: 'fridge', label: t('np.fridge') }) as const
+const HOOD_TYPE_OPTION = (t: TranslateFn) => ({ value: 'hood', label: t('np.chimney') }) as const
+const COMPARTMENT_TYPE_CONTROL_OPTIONS = [...COMPARTMENT_TYPE_OPTIONS(t), FRIDGE_TYPE_OPTION(t)] as const
+const WALL_COMPARTMENT_TYPE_CONTROL_OPTIONS = (t: TranslateFn) => [
+  { value: 'shelf', label: t('np.shelf') },
+  { value: 'drawer', label: t('np.drawer') },
+  { value: 'door', label: t('np.door') },
+  HOOD_TYPE_OPTION(t),
 ] as const
 
-const FRIDGE_STYLE_OPTIONS = [
-  { value: 'fridge-single', label: 'Single' },
-  { value: 'fridge-double', label: 'Double' },
-  { value: 'fridge-top-freezer', label: 'Top Freezer' },
-  { value: 'fridge-bottom-freezer', label: 'Bottom Freezer' },
+const FRIDGE_STYLE_OPTIONS = (t: TranslateFn) => [
+  { value: 'fridge-single', label: t('np.single') },
+  { value: 'fridge-double', label: t('np.double') },
+  { value: 'fridge-top-freezer', label: t('np.topFreezer') },
+  { value: 'fridge-bottom-freezer', label: t('np.bottomFreezer') },
 ] as const
 
-const COOKTOP_STYLE_OPTIONS = [
-  { value: 'cooktop-gas', label: 'Gas' },
-  { value: 'cooktop-induction', label: 'Induction' },
+const COOKTOP_STYLE_OPTIONS = (t: TranslateFn) => [
+  { value: 'cooktop-gas', label: t('np.gas') },
+  { value: 'cooktop-induction', label: t('np.induction') },
 ] as const
 
-const GAS_COOKTOP_LAYOUT_OPTIONS = [
+const GAS_COOKTOP_LAYOUT_OPTIONS = (t: TranslateFn) => [
   { value: 'gas-2burner', label: '2' },
   { value: 'gas-4burner', label: '4' },
   { value: 'gas-5burner-wok', label: '5' },
   { value: 'gas-6burner', label: '6' },
 ] as const satisfies Array<{ value: CooktopLayout; label: string }>
 
-const INDUCTION_COOKTOP_LAYOUT_OPTIONS = [
+const INDUCTION_COOKTOP_LAYOUT_OPTIONS = (t: TranslateFn) => [
   { value: 'induction-2zone', label: '2' },
   { value: 'induction-4zone', label: '4' },
 ] as const satisfies Array<{ value: CooktopLayout; label: string }>
 
-const SINK_LAYOUT_OPTIONS = [
-  { value: 'single', label: 'Single' },
-  { value: 'double', label: 'Double' },
-  { value: 'double-offset', label: '60/40' },
+const SINK_LAYOUT_OPTIONS = (t: TranslateFn) => [
+  { value: 'single', label: t('np.single') },
+  { value: 'double', label: t('np.double') },
+  { value: 'double-offset', label: t('np.n6040') },
 ] as const satisfies Array<{ value: SinkLayout; label: string }>
 
-const PULL_OUT_PANTRY_RACK_STYLE_OPTIONS = [
-  { value: 'wire', label: 'Wire' },
-  { value: 'tray', label: 'Tray' },
-  { value: 'glass', label: 'Glass' },
+const PULL_OUT_PANTRY_RACK_STYLE_OPTIONS = (t: TranslateFn) => [
+  { value: 'wire', label: t('np.wire') },
+  { value: 'tray', label: t('np.tray') },
+  { value: 'glass', label: t('np.glass') },
 ] as const satisfies Array<{ value: (typeof PULL_OUT_PANTRY_RACK_STYLES)[number]; label: string }>
 
-const DOOR_TYPE_OPTIONS = [
-  { value: 'single-left', label: 'Left' },
-  { value: 'single-right', label: 'Right' },
-  { value: 'double', label: 'Double' },
-  { value: 'glass', label: 'Glass' },
+const DOOR_TYPE_OPTIONS = (t: TranslateFn) => [
+  { value: 'single-left', label: t('np.left') },
+  { value: 'single-right', label: t('np.right') },
+  { value: 'double', label: t('np.double') },
+  { value: 'glass', label: t('np.glass') },
 ] as const
 
 const ICON_BUTTON_CLASS =
@@ -151,9 +151,9 @@ function CompartmentTypeControl({
   wallCabinet?: boolean
 }) {
   const options = wallCabinet
-    ? WALL_COMPARTMENT_TYPE_CONTROL_OPTIONS
+    ? WALL_COMPARTMENT_TYPE_CONTROL_OPTIONS(t)
     : includeHood
-      ? [...COMPARTMENT_TYPE_CONTROL_OPTIONS, HOOD_TYPE_OPTION]
+      ? [...COMPARTMENT_TYPE_CONTROL_OPTIONS, HOOD_TYPE_OPTION(t)]
       : COMPARTMENT_TYPE_CONTROL_OPTIONS
   return (
     <div className="grid w-full grid-cols-3 gap-1 rounded-lg border border-border/50 bg-[#2C2C2E] p-[3px]">
@@ -208,6 +208,7 @@ export function CompartmentCard({
   allowHood?: boolean
   wallCabinet?: boolean
 }) {
+  const { t } = useI18n()
   const type = compartment.type as CabinetCompartmentType
   const isFridge = isFridgeCompartmentType(type)
   const isHood = isHoodCompartmentType(type)
@@ -217,9 +218,9 @@ export function CompartmentCard({
       <div className="flex items-center justify-between pb-1.5">
         <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
           {displayIndex === 0
-            ? 'Top'
+            ? t('np.top')
             : displayIndex === total - 1
-              ? 'Bottom'
+              ? t('np.bottom')
               : `#${total - displayIndex}`}
         </span>
         <div className="flex items-center gap-1">
@@ -252,7 +253,7 @@ export function CompartmentCard({
 
       <div className="pb-2">
         <div className="px-1 pb-1 text-[10px] uppercase tracking-wide text-muted-foreground">
-          Type
+          {t('np.type')}
         </div>
         <CompartmentTypeControl
           includeHood={allowHood || isHood}
@@ -278,7 +279,7 @@ export function CompartmentCard({
       {!isHood && !isCooktop && type !== 'sink' && (
         <div className="pb-2">
           <SliderControl
-            label="Height"
+            label={t('np.height')}
             max={carcassHeight}
             min={0.1}
             onChange={onResizeHeight}
@@ -292,7 +293,7 @@ export function CompartmentCard({
 
       {type === 'shelf' && (
         <Stepper
-          label="Shelves"
+          label={t('np.shelves')}
           max={8}
           min={0}
           onChange={(value) => onReplace(patchCompartment(compartment, { shelfCount: value }))}
@@ -302,7 +303,7 @@ export function CompartmentCard({
 
       {type === 'drawer' && (
         <Stepper
-          label="Drawers"
+          label={t('np.drawers')}
           max={6}
           min={1}
           onChange={(value) => onReplace(patchCompartment(compartment, { drawerCount: value }))}
@@ -314,11 +315,11 @@ export function CompartmentCard({
         <div className="space-y-2">
           <div>
             <div className="px-1 pb-1 text-[10px] uppercase tracking-wide text-muted-foreground">
-              Style
+              {t('np.style')}
             </div>
             <SegmentedControl
               onChange={(value) => onReplace(patchCompartment(compartment, { doorType: value }))}
-              options={DOOR_TYPE_OPTIONS.map((option) => ({
+              options={DOOR_TYPE_OPTIONS(t).map((option) => ({
                 value: option.value,
                 label: option.label,
               }))}
@@ -326,7 +327,7 @@ export function CompartmentCard({
             />
           </div>
           <Stepper
-            label="Shelves inside"
+            label={t('np.shelvesInside')}
             max={8}
             min={0}
             onChange={(value) => onReplace(patchCompartment(compartment, { shelfCount: value }))}
@@ -338,7 +339,7 @@ export function CompartmentCard({
       {isFridge && (
         <div>
           <div className="px-1 pb-1 text-[10px] uppercase tracking-wide text-muted-foreground">
-            Style
+            {t('np.style')}
           </div>
           <SegmentedControl
             onChange={(value) =>
@@ -349,7 +350,7 @@ export function CompartmentCard({
                 }),
               )
             }
-            options={FRIDGE_STYLE_OPTIONS.map((option) => ({
+            options={FRIDGE_STYLE_OPTIONS(t).map((option) => ({
               value: option.value,
               label: option.label,
             }))}
@@ -360,14 +361,14 @@ export function CompartmentCard({
 
       {isHood && (
         <div className="rounded-lg border border-border/30 bg-black/10 px-2 py-1.5 text-[11px] font-medium text-muted-foreground">
-          Chimney
+          {t('np.chimney')}
         </div>
       )}
 
       {isCooktop && (
         <div className="space-y-2">
           <div className="px-1 pb-1 text-[10px] uppercase tracking-wide text-muted-foreground">
-            Surface
+            {t('np.surface')}
           </div>
           <SegmentedControl
             onChange={(value) =>
@@ -384,7 +385,7 @@ export function CompartmentCard({
                 }),
               )
             }
-            options={COOKTOP_STYLE_OPTIONS.map((option) => ({
+            options={COOKTOP_STYLE_OPTIONS(t).map((option) => ({
               value: option.value,
               label: option.label,
             }))}
@@ -392,15 +393,15 @@ export function CompartmentCard({
           />
           <div>
             <div className="px-1 pb-1 text-[10px] uppercase tracking-wide text-muted-foreground">
-              Layout
+              {t('np.layout')}
             </div>
             <SegmentedControl
               onChange={(value) =>
                 onReplace(patchCompartment(compartment, { cooktopLayout: value }))
               }
               options={(type === 'cooktop-gas'
-                ? GAS_COOKTOP_LAYOUT_OPTIONS
-                : INDUCTION_COOKTOP_LAYOUT_OPTIONS
+                ? GAS_COOKTOP_LAYOUT_OPTIONS(t)
+                : INDUCTION_COOKTOP_LAYOUT_OPTIONS(t)
               ).map((option) => ({
                 value: option.value,
                 label: option.label,
@@ -410,7 +411,7 @@ export function CompartmentCard({
           </div>
           <ToggleControl
             checked={compartmentCooktopBurnersOn(compartment)}
-            label="Burners on"
+            label={t('np.burnersOn')}
             onChange={(checked) => {
               const count = compartmentCooktopElementCount(
                 compartment,
@@ -430,7 +431,7 @@ export function CompartmentCard({
           {type === 'cooktop-gas' && (
             <ToggleControl
               checked={compartmentCooktopShowGrate(compartment)}
-              label="Top grate"
+              label={t('np.topGrate')}
               onChange={(checked) =>
                 onReplace(patchCompartment(compartment, { cooktopShowGrate: checked }))
               }
@@ -442,11 +443,11 @@ export function CompartmentCard({
       {type === 'sink' && (
         <div>
           <div className="px-1 pb-1 text-[10px] uppercase tracking-wide text-muted-foreground">
-            Bowls
+            {t('np.bowls')}
           </div>
           <SegmentedControl
             onChange={(value) => onReplace(patchCompartment(compartment, { sinkLayout: value }))}
-            options={SINK_LAYOUT_OPTIONS.map((option) => ({
+            options={SINK_LAYOUT_OPTIONS(t).map((option) => ({
               value: option.value,
               label: option.label,
             }))}
@@ -458,7 +459,7 @@ export function CompartmentCard({
       {type === 'pull-out-pantry' && (
         <div className="space-y-2">
           <Stepper
-            label="Baskets"
+            label={t('np.baskets')}
             max={8}
             min={2}
             onChange={(value) => onReplace(patchCompartment(compartment, { shelfCount: value }))}
@@ -466,13 +467,13 @@ export function CompartmentCard({
           />
           <div>
             <div className="px-1 pb-1 text-[10px] uppercase tracking-wide text-muted-foreground">
-              Rack
+              {t('np.rack')}
             </div>
             <SegmentedControl
               onChange={(value) =>
                 onReplace(patchCompartment(compartment, { pantryRackStyle: value }))
               }
-              options={PULL_OUT_PANTRY_RACK_STYLE_OPTIONS.map((option) => ({
+              options={PULL_OUT_PANTRY_RACK_STYLE_OPTIONS(t).map((option) => ({
                 value: option.value,
                 label: option.label,
               }))}

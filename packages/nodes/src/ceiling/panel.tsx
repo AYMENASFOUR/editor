@@ -19,8 +19,7 @@ import {
   triggerSFX,
   useEditingHole,
   useEditor,
-  useInteractionScope,
-} from '@pascal-app/editor'
+  useInteractionScope, useI18n} from '@pascal-app/editor'
 import { useViewer } from '@pascal-app/viewer'
 import { Edit, Move, Plus, Trash2 } from 'lucide-react'
 import { useCallback, useEffect, useRef } from 'react'
@@ -34,6 +33,7 @@ import { useCallback, useEffect, useRef } from 'react'
  * panel can collapse into auto-derived groups.
  */
 export function CeilingPanel() {
+  const { t } = useI18n()
   const selectedId = useViewer((s) => s.selection.selectedIds[0])
   const unit = useViewer((s) => s.unit)
   const setSelection = useViewer((s) => s.setSelection)
@@ -226,39 +226,39 @@ export function CeilingPanel() {
   const heightPresets =
     unit === 'imperial'
       ? [
-          { label: 'Low (8\'0")', height: 2.4384 },
-          { label: 'Standard (8\'6")', height: 2.5908 },
-          { label: 'High (9\'0")', height: 2.7432 },
+          { label: t('np.low80'), height: 2.4384 },
+          { label: t('np.standard86'), height: 2.5908 },
+          { label: t('np.high90'), height: 2.7432 },
         ]
       : [
-          { label: 'Low (2.4m)', height: 2.4 },
-          { label: 'Standard (2.5m)', height: 2.5 },
-          { label: 'High (3.0m)', height: 3.0 },
+          { label: t('np.low24m'), height: 2.4 },
+          { label: t('np.standard25m'), height: 2.5 },
+          { label: t('np.high30m'), height: 3.0 },
         ]
 
   return (
     <PanelWrapper
       icon="/icons/ceiling.webp"
       onClose={handleClose}
-      title={node.name || 'Ceiling'}
+      title={node.name || t('np.ceiling')}
       width={320}
     >
-      <PanelSection title="Height">
+      <PanelSection title={t('np.height')}>
         <SegmentedControl
           onChange={handleTopModeChange}
           options={[
-            { label: 'Follows level', value: 'storey' },
-            { label: 'Custom height', value: 'custom' },
+            { label: t('np.followsLevel'), value: 'storey' },
+            { label: t('np.customHeight'), value: 'custom' },
           ]}
           value={isFollows ? 'storey' : 'custom'}
         />
         {isFollows ? (
           <div className="px-1 text-[11px] text-muted-foreground">
-            Currently {formatLinearMeasurement(resolvedHeight, unit)}
+            {t('np.currently')} {formatLinearMeasurement(resolvedHeight, unit)}
           </div>
         ) : (
           <SliderControl
-            label="Height"
+            label={t('np.height')}
             max={Math.min(6, maxHeight)}
             min={0}
             onChange={handleHeightChange}
@@ -282,14 +282,14 @@ export function CeilingPanel() {
         </div>
       </PanelSection>
 
-      <PanelSection title="Info">
+      <PanelSection title={t('np.info')}>
         <div className="flex items-center justify-between px-2 py-1 text-muted-foreground text-sm">
-          <span>Area</span>
+          <span>{t('np.area')}</span>
           <span className="font-mono text-white">{area.toFixed(2)} m²</span>
         </div>
       </PanelSection>
 
-      <PanelSection title="Holes">
+      <PanelSection title={t('np.holes')}>
         {node.holes && node.holes.length > 0 ? (
           <div className="flex flex-col gap-1 pb-2">
             {node.holes.map((hole, index) => {
@@ -298,7 +298,7 @@ export function CeilingPanel() {
                 editingHole?.nodeId === selectedId && editingHole?.holeIndex === index
               const source = node.holeMetadata?.[index]?.source ?? 'manual'
               const isAutoHole = source !== 'manual'
-              const autoLabel = source === 'elevator' ? 'Auto elevator cutout' : 'Auto stair cutout'
+              const autoLabel = source === 'elevator' ? t('np.autoElevatorCutout') : t('np.autoStairCutout')
               return (
                 <div
                   className={`flex items-center justify-between rounded-lg border p-2 transition-colors ${
@@ -312,18 +312,18 @@ export function CeilingPanel() {
                     <p
                       className={`font-medium text-xs ${isEditing ? 'text-primary' : 'text-white'}`}
                     >
-                      Hole {index + 1} {isEditing && '(Editing)'}
+                      {t('np.hole')} {index + 1} {isEditing && `(${t('np.editing')})`}
                     </p>
                     <p className="text-[10px] text-muted-foreground">
                       {holeArea.toFixed(2)} m² · {hole.length} pts ·{' '}
-                      {isAutoHole ? autoLabel : 'Manual'}
+                      {isAutoHole ? autoLabel : t('np.manual')}
                     </p>
                   </div>
                   <div className="flex items-center gap-1">
                     {isEditing ? (
                       <ActionButton
                         className="h-7 bg-primary text-primary-foreground hover:bg-primary/90"
-                        label="Done"
+                        label={t('np.done')}
                         onClick={() =>
                           useInteractionScope
                             .getState()
@@ -334,7 +334,7 @@ export function CeilingPanel() {
                       />
                     ) : isAutoHole ? (
                       <div className="rounded-md bg-[#2C2C2E] px-2 py-1 text-[10px] text-muted-foreground">
-                        Auto
+                        {t('np.auto')}
                       </div>
                     ) : (
                       <>
@@ -360,7 +360,7 @@ export function CeilingPanel() {
             })}
           </div>
         ) : (
-          <div className="px-2 py-3 text-center text-muted-foreground text-xs">No holes</div>
+          <div className="px-2 py-3 text-center text-muted-foreground text-xs">{t('np.noHoles')}</div>
         )}
 
         <div className="px-1 pt-1 pb-1">
@@ -368,14 +368,14 @@ export function CeilingPanel() {
             className="w-full"
             disabled={editingHole?.nodeId === selectedId}
             icon={<Plus className="h-3.5 w-3.5" />}
-            label="Add Hole"
+            label={t('np.addHole')}
             onClick={handleAddHole}
           />
         </div>
       </PanelSection>
 
       <ActionGroup>
-        <ActionButton icon={<Move className="h-3.5 w-3.5" />} label="Move" onClick={handleMove} />
+        <ActionButton icon={<Move className="h-3.5 w-3.5" />} label={t('np.move')} onClick={handleMove} />
       </ActionGroup>
     </PanelWrapper>
   )

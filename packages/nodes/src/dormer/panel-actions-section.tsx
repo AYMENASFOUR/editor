@@ -1,6 +1,6 @@
 'use client'
 
-import { ActionButton, ActionGroup, PanelSection } from '@pascal-app/editor'
+import { ActionButton, ActionGroup, PanelSection, useI18n} from '@pascal-app/editor'
 import { Copy, Move, Trash2 } from 'lucide-react'
 
 /**
@@ -16,19 +16,20 @@ export function DormerActionsSection({
   onDuplicate: () => void
   onDelete: () => void
 }) {
+  const { t } = useI18n()
   return (
-    <PanelSection title="Actions">
+    <PanelSection title={t('np.actions')}>
       <ActionGroup>
-        <ActionButton icon={<Move className="h-3.5 w-3.5" />} label="Move" onClick={onMove} />
+        <ActionButton icon={<Move className="h-3.5 w-3.5" />} label={t('np.move')} onClick={onMove} />
         <ActionButton
           icon={<Copy className="h-3.5 w-3.5" />}
-          label="Duplicate"
+          label={t('np.duplicate')}
           onClick={onDuplicate}
         />
         <ActionButton
           className="hover:bg-red-500/20"
           icon={<Trash2 className="h-3.5 w-3.5 text-red-400" />}
-          label="Delete"
+          label={t('np.delete')}
           onClick={onDelete}
         />
       </ActionGroup>

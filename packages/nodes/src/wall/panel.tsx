@@ -34,8 +34,7 @@ import {
   SegmentedControl,
   SliderControl,
   triggerSFX,
-  useInteractionScope,
-} from '@pascal-app/editor'
+  useInteractionScope, useI18n, type TranslateFn} from '@pascal-app/editor'
 import { useViewer } from '@pascal-app/viewer'
 import { Plus, Spline, Trash2 } from 'lucide-react'
 import { useCallback, useMemo, useRef } from 'react'
@@ -43,34 +42,35 @@ import { resolveWallOpeningCeiling } from '../shared/wall-opening-ceiling'
 
 type WallTrimKey = 'skirting' | 'crown' | 'chairRail'
 
-const WALL_TRIM_PROFILE_OPTIONS: Record<
+const WALL_TRIM_PROFILE_OPTIONS = (t: TranslateFn): Record<
   WallTrimKey,
   Array<{ label: string; value: WallTrimProfile }>
-> = {
+> => ({
   skirting: [
-    { label: 'Flat', value: 'flat' },
-    { label: 'Modern', value: 'base-modern' },
-    { label: 'Colonial', value: 'base-colonial' },
-    { label: 'Shoe', value: 'base-shoe' },
-    { label: 'Ogee', value: 'base-ogee' },
+    { label: t('np.flat'), value: 'flat' },
+    { label: t('np.modern'), value: 'base-modern' },
+    { label: t('np.colonial'), value: 'base-colonial' },
+    { label: t('np.shoe'), value: 'base-shoe' },
+    { label: t('np.ogee'), value: 'base-ogee' },
   ],
   crown: [
-    { label: 'Flat', value: 'flat' },
-    { label: 'Cove', value: 'crown-cove' },
-    { label: 'Ogee', value: 'crown-ogee' },
-    { label: 'Craft', value: 'crown-craftsman' },
-    { label: 'Layered', value: 'crown-layered' },
+    { label: t('np.flat'), value: 'flat' },
+    { label: t('np.cove'), value: 'crown-cove' },
+    { label: t('np.ogee'), value: 'crown-ogee' },
+    { label: t('np.craft'), value: 'crown-craftsman' },
+    { label: t('np.layered'), value: 'crown-layered' },
   ],
   chairRail: [
-    { label: 'Flat', value: 'flat' },
-    { label: 'Round', value: 'rail-rounded' },
-    { label: 'Ogee', value: 'rail-ogee' },
-    { label: 'Picture', value: 'rail-picture' },
-    { label: 'Step', value: 'rail-stepped' },
+    { label: t('np.flat'), value: 'flat' },
+    { label: t('np.round'), value: 'rail-rounded' },
+    { label: t('np.ogee'), value: 'rail-ogee' },
+    { label: t('np.picture'), value: 'rail-picture' },
+    { label: t('np.step'), value: 'rail-stepped' },
   ],
-}
+})
 
 export default function WallPanel() {
+  const { t } = useI18n()
   const selectedId = useViewer((s) => s.selection.selectedIds[0])
   const unit = useViewer((s) => s.unit)
   const setSelection = useViewer((s) => s.setSelection)
@@ -214,12 +214,12 @@ export default function WallPanel() {
     <PanelWrapper
       icon="/icons/wall.webp"
       onClose={handleClose}
-      title={node.name || 'Wall'}
+      title={node.name || t('np.wall')}
       width={280}
     >
-      <PanelSection title="Dimensions">
+      <PanelSection title={t('np.dimensions')}>
         <SliderControl
-          label="Length"
+          label={t('np.length')}
           max={metersToLinearUnit(20, unit)}
           min={metersToLinearUnit(0.1, unit)}
           onChange={(value) =>
@@ -233,23 +233,23 @@ export default function WallPanel() {
           value={displayLength}
         />
         <div className="px-1 font-medium text-[10px] text-muted-foreground/80 uppercase tracking-wider">
-          Top
+          {t('np.top')}
         </div>
         <SegmentedControl
           onChange={handleTopModeChange}
           options={[
-            { label: 'Follows level', value: 'storey' },
-            { label: 'Custom height', value: 'custom' },
+            { label: t('np.followsLevel'), value: 'storey' },
+            { label: t('np.customHeight'), value: 'custom' },
           ]}
           value={isPlaneBound ? 'storey' : 'custom'}
         />
         {isPlaneBound ? (
           <div className="px-1 text-[11px] text-muted-foreground">
-            Currently {formatLinearMeasurement(height, unit)}
+            {t('np.currently')} {formatLinearMeasurement(height, unit)}
           </div>
         ) : (
           <SliderControl
-            label="Height"
+            label={t('np.height')}
             max={metersToLinearUnit(6, unit)}
             min={metersToLinearUnit(0.1, unit)}
             onChange={(v) =>
@@ -264,7 +264,7 @@ export default function WallPanel() {
           />
         )}
         <SliderControl
-          label="Thickness"
+          label={t('np.thickness')}
           max={metersToLinearUnit(1, unit)}
           min={metersToLinearUnit(0.05, unit)}
           onChange={(v) =>
@@ -279,7 +279,7 @@ export default function WallPanel() {
         />
         {!hasWallChildrenBlockingCurve && (
           <SliderControl
-            label="Curve"
+            label={t('np.curve')}
             max={Math.max(metersToLinearUnit(0.01, unit), displayMaxCurveOffset)}
             min={-Math.max(metersToLinearUnit(0.01, unit), displayMaxCurveOffset)}
             onChange={(v) =>
@@ -314,7 +314,7 @@ export default function WallPanel() {
       <WallTrimSection
         node={node}
         onUpdate={handleUpdate}
-        title="Skirting"
+        title={t('np.skirting')}
         trimKey="skirting"
         trimValue={skirting}
         unit={unit}
@@ -324,7 +324,7 @@ export default function WallPanel() {
       <WallTrimSection
         node={node}
         onUpdate={handleUpdate}
-        title="Crown molding"
+        title={t('np.crownMolding')}
         trimKey="crown"
         trimValue={crown}
         unit={unit}
@@ -334,7 +334,7 @@ export default function WallPanel() {
       <WallTrimSection
         node={node}
         onUpdate={handleUpdate}
-        title="Chair rail"
+        title={t('np.chairRail')}
         trimKey="chairRail"
         trimValue={chairRail}
         unit={unit}
@@ -343,11 +343,11 @@ export default function WallPanel() {
       />
 
       {!hasWallChildrenBlockingCurve && (
-        <PanelSection title="Actions">
+        <PanelSection title={t('np.actions')}>
           <ActionGroup>
             <ActionButton
               icon={<Spline className="h-3.5 w-3.5" />}
-              label="Curve"
+              label={t('np.curve')}
               onClick={handleCurve}
             />
           </ActionGroup>
@@ -357,23 +357,23 @@ export default function WallPanel() {
   )
 }
 
-const WALL_ASSEMBLY_ROLE_OPTIONS: Array<{ label: string; value: WallAssemblyLayerRole }> = [
-  { label: 'Structure', value: 'structure' },
-  { label: 'Interior finish', value: 'interior-finish' },
-  { label: 'Exterior sheathing', value: 'exterior-sheathing' },
-  { label: 'Exterior finish', value: 'exterior-finish' },
-  { label: 'Masonry veneer', value: 'masonry-veneer' },
-  { label: 'Air space', value: 'air-space' },
-  { label: 'Concrete block', value: 'concrete-block' },
-  { label: 'Structural masonry', value: 'structural-masonry' },
-  { label: 'Solid concrete', value: 'solid-concrete' },
-  { label: 'Furring', value: 'furring' },
+const WALL_ASSEMBLY_ROLE_OPTIONS = (t: TranslateFn): Array<{ label: string; value: WallAssemblyLayerRole }> => [
+  { label: t('np.structure'), value: 'structure' },
+  { label: t('np.interiorFinish'), value: 'interior-finish' },
+  { label: t('np.exteriorSheathing'), value: 'exterior-sheathing' },
+  { label: t('np.exteriorFinish'), value: 'exterior-finish' },
+  { label: t('np.masonryVeneer'), value: 'masonry-veneer' },
+  { label: t('np.airSpace'), value: 'air-space' },
+  { label: t('np.concreteBlock'), value: 'concrete-block' },
+  { label: t('np.structuralMasonry'), value: 'structural-masonry' },
+  { label: t('np.solidConcrete'), value: 'solid-concrete' },
+  { label: t('np.furring'), value: 'furring' },
 ]
 
-const WALL_DATUM_OPTIONS: Array<{ label: string; value: WallDimensionDatum }> = [
-  { label: 'Structural', value: 'structural-face' },
-  { label: 'Finish', value: 'finish-face' },
-  { label: 'Veneer', value: 'veneer-face' },
+const WALL_DATUM_OPTIONS = (t: TranslateFn): Array<{ label: string; value: WallDimensionDatum }> => [
+  { label: t('np.structural'), value: 'structural-face' },
+  { label: t('np.finish'), value: 'finish-face' },
+  { label: t('np.veneer'), value: 'veneer-face' },
 ]
 
 function WallAssemblySection({
@@ -387,6 +387,7 @@ function WallAssemblySection({
   unit: 'metric' | 'imperial'
   unitLabel: string
 }) {
+  const { t } = useI18n()
   const layers = node.assemblyLayers ?? []
   const updateLayer = (index: number, patch: Partial<WallAssemblyLayer>) =>
     onUpdate({
@@ -412,7 +413,7 @@ function WallAssemblySection({
   }
 
   return (
-    <PanelSection title="Wall assembly">
+    <PanelSection title={t('np.wallAssembly')}>
       <div className="space-y-2 px-1 pb-1">
         {layers.map((layer, index) => (
           <div className="space-y-2 rounded-lg border border-border/50 p-2" key={layer.id}>
@@ -447,7 +448,7 @@ function WallAssemblySection({
                 }
                 value={layer.role}
               >
-                {WALL_ASSEMBLY_ROLE_OPTIONS.map((option) => (
+                {WALL_ASSEMBLY_ROLE_OPTIONS(t).map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
@@ -462,13 +463,13 @@ function WallAssemblySection({
                 }
                 value={layer.side}
               >
-                <option value="core">Core</option>
-                <option value="interior">Interior</option>
-                <option value="exterior">Exterior</option>
+                <option value="core">{t('np.core')}</option>
+                <option value="interior">{t('np.interior')}</option>
+                <option value="exterior">{t('np.exterior')}</option>
               </select>
             </div>
             <label className="flex items-center gap-2 text-xs">
-              <span className="text-muted-foreground">Thickness</span>
+              <span className="text-muted-foreground">{t('np.thickness')}</span>
               <input
                 className="h-7 min-w-0 flex-1 rounded-md border border-border/50 bg-[#2C2C2E] px-2 font-mono outline-none"
                 min={0.001}
@@ -485,7 +486,7 @@ function WallAssemblySection({
               <span className="text-muted-foreground">{unitLabel}</span>
             </label>
             <div className="flex flex-wrap gap-x-3 gap-y-1">
-              {WALL_DATUM_OPTIONS.map((option) => (
+              {WALL_DATUM_OPTIONS(t).map((option) => (
                 <label className="flex items-center gap-1 text-[10px]" key={option.value}>
                   <input
                     checked={layer.datumEligible.includes(option.value)}
@@ -509,7 +510,7 @@ function WallAssemblySection({
           onClick={addLayer}
           type="button"
         >
-          <Plus className="size-3.5" /> Add assembly layer
+          <Plus className="size-3.5" /> {t('np.addAssemblyLayer')}
         </button>
       </div>
     </PanelSection>
@@ -529,6 +530,7 @@ function WallFaceBandSection({
   unitLabel: string
   wallHeightMeters: number
 }) {
+  const { t } = useI18n()
   const bandConfig = getWallFaceBandConfig(node, wallHeightMeters)
   const bandCount = bandConfig.count
   const lowerHeight = bandConfig.lowerHeight
@@ -546,9 +548,9 @@ function WallFaceBandSection({
     })
 
   return (
-    <PanelSection title="Wall bands">
+    <PanelSection title={t('np.wallBands')}>
       <SliderControl
-        label="Bands"
+        label={t('np.bands')}
         max={4}
         min={1}
         onChange={(value) => onUpdate(buildWallFaceBandCountPatch(node, Math.round(value)))}
@@ -558,7 +560,7 @@ function WallFaceBandSection({
       />
       {bandCount >= 2 && (
         <SliderControl
-          label="Lower"
+          label={t('np.lower')}
           max={metersToLinearUnit(wallHeightMeters, unit)}
           min={metersToLinearUnit(0, unit)}
           onChange={(value) =>
@@ -577,7 +579,7 @@ function WallFaceBandSection({
       )}
       {bandCount >= 3 && (
         <SliderControl
-          label="Middle"
+          label={t('np.middle')}
           max={metersToLinearUnit(Math.max(0, wallHeightMeters - lowerHeight), unit)}
           min={metersToLinearUnit(0, unit)}
           onChange={(value) =>
@@ -596,7 +598,7 @@ function WallFaceBandSection({
       )}
       {bandCount >= 4 && (
         <SliderControl
-          label="Upper"
+          label={t('np.upper')}
           max={metersToLinearUnit(Math.max(0, wallHeightMeters - lowerHeight - middleHeight), unit)}
           min={metersToLinearUnit(0, unit)}
           onChange={(value) =>
@@ -636,6 +638,7 @@ function WallTrimSection({
   unitLabel: string
   wallHeightMeters: number
 }) {
+  const { t } = useI18n()
   const updateTrim = (patch: Partial<NonNullable<WallNode['skirting']>>) =>
     onUpdate({
       [trimKey]: {
@@ -643,7 +646,7 @@ function WallTrimSection({
         ...patch,
       },
     } as Partial<WallNode>)
-  const profileOptions = WALL_TRIM_PROFILE_OPTIONS[trimKey]
+  const profileOptions = WALL_TRIM_PROFILE_OPTIONS(t)[trimKey]
   const selectedProfile = profileOptions.some((option) => option.value === trimValue.profile)
     ? trimValue.profile
     : profileOptions[0]!.value
@@ -661,9 +664,9 @@ function WallTrimSection({
           <SegmentedControl
             onChange={(next) => updateTrim({ sides: next as any })}
             options={[
-              { label: 'Interior', value: 'interior' },
-              { label: 'Exterior', value: 'exterior' },
-              { label: 'Both', value: 'both' },
+              { label: t('np.interior'), value: 'interior' },
+              { label: t('np.exterior'), value: 'exterior' },
+              { label: t('np.both'), value: 'both' },
             ]}
             value={trimValue.sides}
           />
@@ -673,7 +676,7 @@ function WallTrimSection({
             value={selectedProfile}
           />
           <SliderControl
-            label="Height"
+            label={t('np.height')}
             max={metersToLinearUnit(Math.max(0.05, wallHeightMeters), unit)}
             min={metersToLinearUnit(0.01, unit)}
             onChange={(value) =>
@@ -690,7 +693,7 @@ function WallTrimSection({
             value={metersToLinearUnit(trimValue.height, unit)}
           />
           <SliderControl
-            label="Proud"
+            label={t('np.proud')}
             max={metersToLinearUnit(0.2, unit)}
             min={metersToLinearUnit(0.001, unit)}
             onChange={(value) =>
@@ -708,7 +711,7 @@ function WallTrimSection({
           />
           {trimKey === 'chairRail' && (
             <SliderControl
-              label="Offset"
+              label={t('np.offset')}
               max={metersToLinearUnit(Math.max(0.05, wallHeightMeters - trimValue.height), unit)}
               min={metersToLinearUnit(0, unit)}
               onChange={(value) =>

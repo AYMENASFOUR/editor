@@ -14,8 +14,7 @@ import {
   formatVolumeLabel,
   MetricControl,
   PanelSection,
-  ToggleControl,
-} from '@pascal-app/editor'
+  ToggleControl, useI18n} from '@pascal-app/editor'
 import { useViewer } from '@pascal-app/viewer'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
@@ -31,10 +30,11 @@ function ZonePlanSketch({
   polygon: readonly Point2D[]
   unit: 'metric' | 'imperial'
 }) {
+  const { t } = useI18n()
   if (polygon.length < 3) {
     return (
       <div className="flex h-28 items-center justify-center rounded-md border border-border/50 text-muted-foreground text-xs">
-        Zone boundary unavailable
+        {t('np.zoneBoundaryUnavailable')}
       </div>
     )
   }
@@ -63,7 +63,7 @@ function ZonePlanSketch({
 
   return (
     <svg
-      aria-label="Top view with zone edge dimensions"
+      aria-label={t('np.topViewWithZoneEdgeDimensions')}
       className="h-auto w-full rounded-md border border-cyan-950/20 bg-[#f8faf7]"
       role="img"
       viewBox={`0 0 ${viewWidth} ${viewHeight}`}
@@ -137,13 +137,14 @@ function QuantityRow({
   label: string
   quantity: ZoneQuantityValue
 }) {
+  const { t } = useI18n()
   return (
     <div className="rounded-md border border-border/50 bg-background/35 px-2.5 py-2">
       <div className="flex items-baseline gap-2">
         <span className="font-mono font-semibold text-cyan-600 text-[10px]">{abbreviation}</span>
         <span className="text-muted-foreground text-xs">{label}</span>
         <span className="ml-auto font-mono font-medium text-foreground text-xs tabular-nums">
-          {quantity.status === 'available' ? format(quantity.value) : 'Not proven'}
+          {quantity.status === 'available' ? format(quantity.value) : t('np.notProven')}
         </span>
       </div>
       <div className="mt-1 text-[10px] text-muted-foreground leading-snug">
@@ -162,6 +163,7 @@ function RoomTextField({
   onCommit: (value: string) => void
   value: string
 }) {
+  const { t } = useI18n()
   const [draft, setDraft] = useState(value)
   const cancelRef = useRef(false)
 
@@ -229,63 +231,64 @@ function RoomSelect({
 }
 
 function RoomDocumentationPanel({ zone }: { zone: ZoneNode }) {
+  const { t } = useI18n()
   const updateNode = useScene((state) => state.updateNode)
   const update = (patch: Partial<ZoneNode>) => updateNode(zone.id, patch)
   const isRoom = zone.spaceRole === 'room'
 
   return (
-    <PanelSection title="Room documentation">
+    <PanelSection title={t('np.roomDocumentation')}>
       <ToggleControl
         checked={isRoom}
-        label="Architectural room"
+        label={t('np.architecturalRoom')}
         onChange={(checked) => update({ spaceRole: checked ? 'room' : 'generic' })}
       />
       {isRoom ? (
         <>
           <RoomTextField
-            label="Room name"
+            label={t('np.roomName')}
             onCommit={(name) => update({ name })}
             value={zone.name}
           />
           <RoomTextField
-            label="Room number"
+            label={t('np.roomNumber')}
             onCommit={(roomNumber) => update({ roomNumber })}
             value={zone.roomNumber}
           />
           <RoomSelect
-            label="Enclosure"
+            label={t('np.enclosure')}
             onChange={(enclosureStatus) =>
               update({ enclosureStatus: enclosureStatus as ZoneNode['enclosureStatus'] })
             }
             options={[
-              { label: 'Auto-detect', value: 'auto' },
-              { label: 'Enclosed', value: 'enclosed' },
-              { label: 'Open', value: 'open' },
+              { label: t('np.autoDetect'), value: 'auto' },
+              { label: t('np.enclosed'), value: 'enclosed' },
+              { label: t('np.open'), value: 'open' },
             ]}
             value={zone.enclosureStatus}
           />
           <RoomTextField
-            label="Occupancy / use"
+            label={t('np.occupancyUse')}
             onCommit={(occupancy) => update({ occupancy })}
             value={zone.occupancy}
           />
           <RoomTextField
-            label="Floor finish"
+            label={t('np.floorFinish')}
             onCommit={(floorFinish) => update({ floorFinish })}
             value={zone.floorFinish}
           />
           <RoomTextField
-            label="Wall finish"
+            label={t('np.wallFinish')}
             onCommit={(wallFinish) => update({ wallFinish })}
             value={zone.wallFinish}
           />
           <RoomTextField
-            label="Ceiling finish"
+            label={t('np.ceilingFinish')}
             onCommit={(ceilingFinish) => update({ ceilingFinish })}
             value={zone.ceilingFinish}
           />
           <MetricControl
-            label="Ceiling height"
+            label={t('np.ceilingHeight')}
             max={20}
             min={0.1}
             onChange={(ceilingHeight) => update({ ceilingHeight })}
@@ -295,16 +298,16 @@ function RoomDocumentationPanel({ zone }: { zone: ZoneNode }) {
             value={zone.ceilingHeight}
           />
           <RoomSelect
-            label="Clear dimensions"
+            label={t('np.clearDimensions')}
             onChange={(clearDimensionPolicy) =>
               update({
                 clearDimensionPolicy: clearDimensionPolicy as ZoneNode['clearDimensionPolicy'],
               })
             }
             options={[
-              { label: 'None', value: 'none' },
-              { label: 'Inside faces', value: 'inside-faces' },
-              { label: 'Finish faces', value: 'finish-faces' },
+              { label: t('np.none'), value: 'none' },
+              { label: t('np.insideFaces'), value: 'inside-faces' },
+              { label: t('np.finishFaces'), value: 'finish-faces' },
             ]}
             value={zone.clearDimensionPolicy}
           />
@@ -315,6 +318,7 @@ function RoomDocumentationPanel({ zone }: { zone: ZoneNode }) {
 }
 
 export default function ZoneQuantitiesPanel() {
+  const { t } = useI18n()
   const selectedZoneId = useViewer((state) => state.selection.zoneId)
   const unit = useViewer((state) => state.unit)
   const nodes = useScene((state) => state.nodes)
@@ -359,13 +363,13 @@ export default function ZoneQuantitiesPanel() {
     <>
       <RoomDocumentationPanel zone={effectiveZone} />
       <PanelSection
-        title={effectiveZone.spaceRole === 'room' ? 'Room quantities' : 'Zone quantities'}
+        title={effectiveZone.spaceRole === 'room' ? t('np.roomQuantities') : t('np.zoneQuantities')}
       >
         <div className="overflow-hidden rounded-md border border-cyan-950/20 bg-[#f8faf7] text-slate-950">
           <div className="flex items-center border-cyan-950/15 border-b px-2.5 py-2">
             <span className="font-semibold text-[11px]">{effectiveZone.name}</span>
             <span className="ml-auto rounded-full border border-cyan-800/25 bg-cyan-50 px-2 py-0.5 text-cyan-900 text-[9px]">
-              {report.classification === 'enclosed-room' ? 'Enclosed room' : 'Footprint only'}
+              {report.classification === 'enclosed-room' ? t('np.enclosedRoom') : t('np.footprintOnly')}
             </span>
           </div>
           <div className="flex items-baseline gap-2 px-2.5 py-2 font-mono text-[10px]">
@@ -386,19 +390,19 @@ export default function ZoneQuantitiesPanel() {
           <QuantityRow
             abbreviation="Aw"
             format={(value) => formatAreaLabel(value, unit, 2)}
-            label="Wall surface"
+            label={t('np.wallSurface')}
             quantity={report.wallSurface}
           />
           <QuantityRow
             abbreviation="Af"
             format={(value) => formatAreaLabel(value, unit, 2)}
-            label="Floor surface"
+            label={t('np.floorSurface')}
             quantity={report.floorSurface}
           />
           <QuantityRow
             abbreviation="V"
             format={(value) => formatVolumeLabel(value, unit, 2)}
-            label="Volume"
+            label={t('np.volume')}
             quantity={report.volume}
           />
         </div>

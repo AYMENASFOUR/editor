@@ -11,8 +11,7 @@ import {
   PanelSection,
   PanelWrapper,
   SegmentedControl,
-  SliderControl,
-} from '@pascal-app/editor'
+  SliderControl, useI18n, type TranslateFn} from '@pascal-app/editor'
 import { useViewer } from '@pascal-app/viewer'
 import { Pause, Play, Plus } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
@@ -53,34 +52,34 @@ import {
 } from './stack'
 import { resolveCompartmentTransition } from './stack-transitions'
 
-const HANDLE_STYLE_OPTIONS = [
-  { value: 'bar', label: 'Bar' },
-  { value: 'knob', label: 'Knob' },
-  { value: 'cutout', label: 'Cutout' },
-  { value: 'hole', label: 'Hole' },
-  { value: 'none', label: 'None' },
+const HANDLE_STYLE_OPTIONS = (t: TranslateFn) => [
+  { value: 'bar', label: t('np.bar') },
+  { value: 'knob', label: t('np.knob') },
+  { value: 'cutout', label: t('np.cutout') },
+  { value: 'hole', label: t('np.hole') },
+  { value: 'none', label: t('np.none') },
 ] as const
 
-const HANDLE_POSITION_OPTIONS = [
-  { value: 'auto', label: 'Auto' },
-  { value: 'top', label: 'Top' },
-  { value: 'center', label: 'Center' },
+const HANDLE_POSITION_OPTIONS = (t: TranslateFn) => [
+  { value: 'auto', label: t('np.auto') },
+  { value: 'top', label: t('np.top') },
+  { value: 'center', label: t('np.center') },
 ] as const
 
-const FRONT_OVERLAY_OPTIONS = [
-  { value: 'full', label: 'Overlay' },
-  { value: 'inset', label: 'Inset' },
+const FRONT_OVERLAY_OPTIONS = (t: TranslateFn) => [
+  { value: 'full', label: t('np.overlay') },
+  { value: 'inset', label: t('np.inset') },
 ] as const
 
-const FRONT_STYLE_OPTIONS = [
-  { value: 'slab', label: 'Slab' },
-  { value: 'shaker', label: 'Shaker' },
-  { value: 'raised-arch', label: 'Raised Arch' },
+const FRONT_STYLE_OPTIONS = (t: TranslateFn) => [
+  { value: 'slab', label: t('np.slab') },
+  { value: 'shaker', label: t('np.shaker') },
+  { value: 'raised-arch', label: t('np.raisedArch') },
 ] as const
 
-const CABINET_TIER_OPTIONS = [
-  { value: 'base', label: 'Base Cabinet' },
-  { value: 'tall', label: 'Tall Cabinet' },
+const CABINET_TIER_OPTIONS = (t: TranslateFn) => [
+  { value: 'base', label: t('np.baseCabinet') },
+  { value: 'tall', label: t('np.tallCabinet') },
 ] as const
 
 const EMPTY_MODULES: CabinetModuleNodeType[] = []
@@ -90,6 +89,7 @@ const PRESET_BUTTON_CLASS =
   'flex h-9 items-center justify-center rounded-md border border-border/40 bg-[#252527] px-3 py-2 text-center text-xs font-medium text-foreground transition-colors hover:border-border/70 hover:bg-[#303033]'
 
 export default function CabinetPanel() {
+  const { t } = useI18n()
   const selectedId = useViewer((s) => s.selection.selectedIds[0])
   const setSelection = useViewer((s) => s.setSelection)
   const [isAnimating, setIsAnimating] = useState(false)
@@ -406,11 +406,11 @@ export default function CabinetPanel() {
       icon="/icons/item.webp"
       onBack={node.type === 'cabinet-module' ? backToRun : undefined}
       onClose={close}
-      title={node.name || 'Modular Cabinet'}
+      title={node.name || t('np.modularCabinet')}
       width={320}
     >
       {node.type === 'cabinet-module' && parentRun?.type === 'cabinet' && (
-        <PanelSection title="Presets">
+        <PanelSection title={t('np.presets')}>
           <div className="grid grid-cols-2 gap-2 px-1 pb-2">
             {CABINET_PRESETS.map((preset) => (
               <button
@@ -426,9 +426,9 @@ export default function CabinetPanel() {
         </PanelSection>
       )}
 
-      <PanelSection title="Dimensions">
+      <PanelSection title={t('np.dimensions')}>
         <SliderControl
-          label="Width"
+          label={t('np.width')}
           max={3}
           min={0.3}
           onChange={(value) => updateNode({ width: value })}
@@ -440,7 +440,7 @@ export default function CabinetPanel() {
         {!isHoodOnlyNode && (
           <>
             <SliderControl
-              label="Depth"
+              label={t('np.depth')}
               max={1.2}
               min={0.3}
               onChange={(value) => updateNode({ depth: value })}
@@ -450,7 +450,7 @@ export default function CabinetPanel() {
               value={node.depth}
             />
             <SliderControl
-              label="Carcass height"
+              label={t('np.carcassHeight')}
               max={
                 node.type === 'cabinet-module' && resolveCabinetType(node, parentRun) === 'tall'
                   ? 2.4
@@ -472,7 +472,7 @@ export default function CabinetPanel() {
       </PanelSection>
 
       {node.type === 'cabinet-module' && parentRun?.type === 'cabinet' && !isHoodOnlyNode && (
-        <PanelSection title="Cabinet Type">
+        <PanelSection title={t('np.cabinetType')}>
           <div className="space-y-2 px-1 pb-2">
             <SegmentedControl
               onChange={(value) => {
@@ -482,7 +482,7 @@ export default function CabinetPanel() {
                 }
                 switchToBase()
               }}
-              options={CABINET_TIER_OPTIONS.map((option) => ({
+              options={CABINET_TIER_OPTIONS(t).map((option) => ({
                 value: option.value,
                 label: option.label,
               }))}
@@ -490,11 +490,11 @@ export default function CabinetPanel() {
             />
             {resolveCabinetType(node, parentRun) === 'base' &&
               (hasWallCabinet ? (
-                <ActionButton label="Remove wall cabinet" onClick={removeWallCabinet} />
+                <ActionButton label={t('np.removeWallCabinet')} onClick={removeWallCabinet} />
               ) : (
                 <>
-                  <ActionButton label="Add wall cabinet" onClick={addWallCabinetAbove} />
-                  <ActionButton label="Add chimney" onClick={addHoodAbove} />
+                  <ActionButton label={t('np.addWallCabinet')} onClick={addWallCabinetAbove} />
+                  <ActionButton label={t('np.addChimney2')} onClick={addHoodAbove} />
                 </>
               ))}
           </div>
@@ -502,11 +502,11 @@ export default function CabinetPanel() {
       )}
 
       {!isHoodOnlyNode && (
-        <PanelSection title="Open Animation">
+        <PanelSection title={t('np.openAnimation')}>
           <div className="flex items-center gap-2 px-1">
             <div className="min-w-0 flex-1">
               <SliderControl
-                label="Open"
+                label={t('np.open')}
                 max={100}
                 min={0}
                 onChange={(value) => {
@@ -521,10 +521,10 @@ export default function CabinetPanel() {
             <button
               aria-label={
                 isAnimating
-                  ? 'Stop animation'
+                  ? t('np.stopAnimation')
                   : (node.operationState ?? 0) >= 0.99
-                    ? 'Close cabinet'
-                    : 'Open cabinet'
+                    ? t('np.closeCabinet')
+                    : t('np.openCabinet')
               }
               className="flex h-7 shrink-0 items-center gap-1.5 rounded-lg border border-border/40 bg-[#2C2C2E] px-2.5 text-[11px] font-medium text-foreground transition-colors hover:bg-[#3e3e3e]"
               onClick={() => {
@@ -536,23 +536,23 @@ export default function CabinetPanel() {
               }}
               title={
                 isAnimating
-                  ? 'Stop animation'
+                  ? t('np.stopAnimation')
                   : (node.operationState ?? 0) >= 0.99
-                    ? 'Close cabinet'
-                    : 'Play animation'
+                    ? t('np.closeCabinet')
+                    : t('np.playAnimation')
               }
               type="button"
             >
               {isAnimating ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
               <span>
-                {isAnimating ? 'Stop' : (node.operationState ?? 0) >= 0.99 ? 'Close' : 'Play'}
+                {isAnimating ? t('np.stop') : (node.operationState ?? 0) >= 0.99 ? t('np.close') : t('np.play')}
               </span>
             </button>
           </div>
         </PanelSection>
       )}
 
-      <PanelSection title="Compartments">
+      <PanelSection title={t('np.compartments')}>
         <div className="flex flex-col gap-2 px-1 pb-2">
           {rows.map(({ compartment, index }, displayIndex) => (
             <CompartmentCard
@@ -578,7 +578,7 @@ export default function CabinetPanel() {
         <div className="px-1 pb-1">
           <ActionButton
             icon={<Plus className="h-4 w-4" />}
-            label="Add compartment"
+            label={t('np.addCompartment')}
             onClick={addCompartment}
           />
         </div>
@@ -586,17 +586,17 @@ export default function CabinetPanel() {
 
       {!isHoodOnlyNode && (
         <>
-          <PanelSection title="Fronts">
+          <PanelSection title={t('np.fronts')}>
             <div className="space-y-2 px-1 pb-2">
               <div>
                 <div className="px-1 pb-1 text-[10px] uppercase tracking-wide text-muted-foreground">
-                  Style
+                  {t('np.style')}
                 </div>
                 <SegmentedControl
                   onChange={(value) =>
                     updateNode({ frontStyle: value as CabinetNodeType['frontStyle'] })
                   }
-                  options={FRONT_STYLE_OPTIONS.map((option) => ({
+                  options={FRONT_STYLE_OPTIONS(t).map((option) => ({
                     value: option.value,
                     label: option.label,
                   }))}
@@ -605,13 +605,13 @@ export default function CabinetPanel() {
               </div>
               <div>
                 <div className="px-1 pb-1 text-[10px] uppercase tracking-wide text-muted-foreground">
-                  Mounting
+                  {t('np.mounting')}
                 </div>
                 <SegmentedControl
                   onChange={(value) =>
                     updateNode({ frontOverlay: value as CabinetNodeType['frontOverlay'] })
                   }
-                  options={FRONT_OVERLAY_OPTIONS.map((option) => ({
+                  options={FRONT_OVERLAY_OPTIONS(t).map((option) => ({
                     value: option.value,
                     label: option.label,
                   }))}
@@ -621,17 +621,17 @@ export default function CabinetPanel() {
             </div>
           </PanelSection>
 
-          <PanelSection title="Handles">
+          <PanelSection title={t('np.handles')}>
             <div className="space-y-2 px-1 pb-2">
               <div>
                 <div className="px-1 pb-1 text-[10px] uppercase tracking-wide text-muted-foreground">
-                  Style
+                  {t('np.style')}
                 </div>
                 <SegmentedControl
                   onChange={(value) =>
                     updateNode({ handleStyle: value as CabinetNodeType['handleStyle'] })
                   }
-                  options={HANDLE_STYLE_OPTIONS.map((option) => ({
+                  options={HANDLE_STYLE_OPTIONS(t).map((option) => ({
                     value: option.value,
                     label: option.label,
                   }))}
@@ -641,13 +641,13 @@ export default function CabinetPanel() {
               {(node.handleStyle === 'bar' || node.handleStyle === 'knob') && (
                 <div>
                   <div className="px-1 pb-1 text-[10px] uppercase tracking-wide text-muted-foreground">
-                    Position
+                    {t('np.position')}
                   </div>
                   <SegmentedControl
                     onChange={(value) =>
                       updateNode({ handlePosition: value as CabinetNodeType['handlePosition'] })
                     }
-                    options={HANDLE_POSITION_OPTIONS.map((option) => ({
+                    options={HANDLE_POSITION_OPTIONS(t).map((option) => ({
                       value: option.value,
                       label: option.label,
                     }))}

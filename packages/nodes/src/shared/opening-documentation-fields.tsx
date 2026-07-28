@@ -1,6 +1,6 @@
 'use client'
 
-import { getLinearUnitLabel, linearUnitToMeters, metersToLinearUnit } from '@pascal-app/editor'
+import { getLinearUnitLabel, linearUnitToMeters, metersToLinearUnit, useI18n} from '@pascal-app/editor'
 import { useViewer } from '@pascal-app/viewer'
 
 type OpeningDocumentationPatch = {
@@ -29,11 +29,12 @@ export function OpeningDocumentationFields({
 }: OpeningDocumentationPatch & {
   onChange: (patch: OpeningDocumentationPatch) => void
 }) {
+  const { t } = useI18n()
   return (
     <div className="flex flex-col gap-2 px-1 pb-1">
       <label className="flex flex-col gap-1">
         <span className="font-medium text-[10px] text-muted-foreground/80 uppercase tracking-wider">
-          Mark
+          {t('np.mark')}
         </span>
         <input
           className="h-8 rounded-lg border border-border/50 bg-[#2C2C2E] px-2.5 font-mono text-foreground text-xs outline-none transition-colors placeholder:text-muted-foreground/50 focus:border-orange-400/60"
@@ -51,13 +52,13 @@ export function OpeningDocumentationFields({
               event.currentTarget.blur()
             }
           }}
-          placeholder="Auto-assigned"
+          placeholder={t('np.autoAssigned')}
         />
       </label>
       <div className="grid grid-cols-2 gap-2">
         <label className="flex flex-col gap-1">
           <span className="font-medium text-[10px] text-muted-foreground/80 uppercase tracking-wider">
-            Construction
+            {t('np.construction')}
           </span>
           <select
             className="h-8 rounded-lg border border-border/50 bg-[#2C2C2E] px-2 text-foreground text-xs outline-none focus:border-orange-400/60"
@@ -73,13 +74,13 @@ export function OpeningDocumentationFields({
             }}
             value={constructionType}
           >
-            <option value="framed">Framed</option>
-            <option value="masonry">Masonry</option>
+            <option value="framed">{t('np.framed')}</option>
+            <option value="masonry">{t('np.masonry')}</option>
           </select>
         </label>
         <label className="flex flex-col gap-1">
           <span className="font-medium text-[10px] text-muted-foreground/80 uppercase tracking-wider">
-            Dimension to
+            {t('np.dimensionTo')}
           </span>
           <select
             className="h-8 rounded-lg border border-border/50 bg-[#2C2C2E] px-2 text-foreground text-xs outline-none focus:border-orange-400/60"
@@ -91,51 +92,51 @@ export function OpeningDocumentationFields({
             }
             value={dimensionReference}
           >
-            <option value="nominal">Nominal</option>
-            <option value="rough-opening">Rough opening</option>
-            <option value="masonry-opening">Masonry opening</option>
-            <option value="finish-opening">Finish opening</option>
+            <option value="nominal">{t('np.nominal')}</option>
+            <option value="rough-opening">{t('np.roughOpening')}</option>
+            <option value="masonry-opening">{t('np.masonryOpening')}</option>
+            <option value="finish-opening">{t('np.finishOpening')}</option>
           </select>
         </label>
       </div>
       <div className="grid grid-cols-2 gap-2">
         <OptionalMeterInput
-          label="RO Width"
+          label={t('np.roWidth')}
           onChange={(value) => onChange({ roughOpeningWidth: value })}
           value={roughOpeningWidth}
         />
         <OptionalMeterInput
-          label="RO Height"
+          label={t('np.roHeight')}
           onChange={(value) => onChange({ roughOpeningHeight: value })}
           value={roughOpeningHeight}
         />
       </div>
       <div className="grid grid-cols-2 gap-2">
         <OptionalMeterInput
-          label="MO Width"
+          label={t('np.moWidth')}
           onChange={(value) => onChange({ masonryOpeningWidth: value })}
           value={masonryOpeningWidth}
         />
         <OptionalMeterInput
-          label="MO Height"
+          label={t('np.moHeight')}
           onChange={(value) => onChange({ masonryOpeningHeight: value })}
           value={masonryOpeningHeight}
         />
       </div>
       <div className="grid grid-cols-2 gap-2">
         <OptionalMeterInput
-          label="FO Width"
+          label={t('np.foWidth')}
           onChange={(value) => onChange({ finishOpeningWidth: value })}
           value={finishOpeningWidth}
         />
         <OptionalMeterInput
-          label="FO Height"
+          label={t('np.foHeight')}
           onChange={(value) => onChange({ finishOpeningHeight: value })}
           value={finishOpeningHeight}
         />
       </div>
       <p className="px-0.5 text-[10px] text-muted-foreground/65 leading-4">
-        Leave RO, MO, and FO values blank until verified by the applicable manufacturer or trade.
+        {t('np.leaveROMOAndFOValuesBlankUntilVerifiedBy')}
       </p>
     </div>
   )
@@ -150,6 +151,7 @@ function OptionalMeterInput({
   value?: number
   onChange: (value: number | undefined) => void
 }) {
+  const { t } = useI18n()
   const unit = useViewer((state) => state.unit)
   const displayValue = value === undefined ? '' : roundForInput(metersToLinearUnit(value, unit))
 
@@ -182,7 +184,7 @@ function OptionalMeterInput({
             }
           }}
           onWheel={(event) => event.currentTarget.blur()}
-          placeholder="Verify"
+          placeholder={t('np.verify')}
           step={unit === 'imperial' ? 0.01 : 0.001}
           type="number"
         />

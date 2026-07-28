@@ -21,32 +21,31 @@ import {
   SliderControl,
   ToggleControl,
   triggerSFX,
-  useEditor,
-} from '@pascal-app/editor'
+  useEditor, useI18n, type TranslateFn} from '@pascal-app/editor'
 import { useViewer } from '@pascal-app/viewer'
 import { Copy, Move, Trash2 } from 'lucide-react'
 import { useCallback } from 'react'
 
-const ROOF_TYPE_OPTIONS: { label: string; value: RoofType }[] = [
-  { label: 'Hip', value: 'hip' },
-  { label: 'Gable', value: 'gable' },
-  { label: 'Shed', value: 'shed' },
+const ROOF_TYPE_OPTIONS = (t: TranslateFn): { label: string; value: RoofType }[] => [
+  { label: t('np.hip'), value: 'hip' },
+  { label: t('np.gable'), value: 'gable' },
+  { label: t('np.shed'), value: 'shed' },
 ]
 
-const ROOF_TYPE_OPTIONS_2: { label: string; value: RoofType }[] = [
-  { label: 'Flat', value: 'flat' },
-  { label: 'Gambrel', value: 'gambrel' },
-  { label: 'Dutch', value: 'dutch' },
-  { label: 'Mansard', value: 'mansard' },
+const ROOF_TYPE_OPTIONS_2 = (t: TranslateFn): { label: string; value: RoofType }[] => [
+  { label: t('np.flat'), value: 'flat' },
+  { label: t('np.gambrel'), value: 'gambrel' },
+  { label: t('np.dutch'), value: 'dutch' },
+  { label: t('np.mansard'), value: 'mansard' },
 ]
 
 // Carpenter / roofer convention: rise over a 12" run, converted to degrees.
 // atan(3/12) ≈ 14.04°, atan(6/12) ≈ 26.57°, atan(9/12) ≈ 36.87°, atan(12/12) = 45°.
-const PITCH_PRESETS: { label: string; deg: number }[] = [
-  { label: '3/12', deg: 14.04 },
-  { label: '6/12', deg: 26.57 },
-  { label: '9/12', deg: 36.87 },
-  { label: '12/12', deg: 45 },
+const PITCH_PRESETS = (t: TranslateFn): { label: string; deg: number }[] => [
+  { label: t('np.n312'), deg: 14.04 },
+  { label: t('np.n612'), deg: 26.57 },
+  { label: t('np.n912'), deg: 36.87 },
+  { label: t('np.n1212'), deg: 45 },
 ]
 
 function shouldShowTrimPlanes(metadata: unknown): boolean {
@@ -61,6 +60,7 @@ function metadataRecord(metadata: unknown): Record<string, unknown> {
 }
 
 export default function RoofSegmentPanel() {
+  const { t } = useI18n()
   const selectedId = useViewer((s) => s.selection.selectedIds[0])
   const setSelection = useViewer((s) => s.setSelection)
   const updateNode = useScene((s) => s.updateNode)
@@ -214,26 +214,26 @@ export default function RoofSegmentPanel() {
       icon="/icons/roof.webp"
       onBack={handleBack}
       onClose={handleClose}
-      title={node.name || 'Roof Segment'}
+      title={node.name || t('np.roofSegment')}
       width={300}
     >
-      <PanelSection title="Roof Type">
+      <PanelSection title={t('np.roofType')}>
         <SegmentedControl
           onChange={(v) => handleRoofTypeChange(v)}
-          options={ROOF_TYPE_OPTIONS}
+          options={ROOF_TYPE_OPTIONS(t)}
           value={node.roofType}
         />
         <SegmentedControl
           onChange={(v) => handleRoofTypeChange(v)}
-          options={ROOF_TYPE_OPTIONS_2}
+          options={ROOF_TYPE_OPTIONS_2(t)}
           value={node.roofType}
         />
       </PanelSection>
 
-      <PanelSection title="Trim">
+      <PanelSection title={t('np.trim')}>
         <ToggleControl
           checked={showTrimPlanes}
-          label="Show trim planes"
+          label={t('np.showTrimPlanes')}
           onChange={(checked) =>
             handleUpdate({
               metadata: { ...metadataRecord(node.metadata), showTrimPlanes: checked },
@@ -243,15 +243,15 @@ export default function RoofSegmentPanel() {
         {node.roofType !== 'shed' && node.roofType !== 'flat' && (
           <ToggleControl
             checked={autoRidgeVentEnabled}
-            label="Auto ridge vent"
+            label={t('np.autoRidgeVent')}
             onChange={handleAutoRidgeVentToggle}
           />
         )}
       </PanelSection>
 
-      <PanelSection title="Footprint">
+      <PanelSection title={t('np.footprint')}>
         <SliderControl
-          label="Width"
+          label={t('np.width')}
           max={25}
           min={0.5}
           onChange={(v) => handleUpdate({ width: v })}
@@ -261,7 +261,7 @@ export default function RoofSegmentPanel() {
           value={Math.round(node.width * 100) / 100}
         />
         <SliderControl
-          label="Depth"
+          label={t('np.depth')}
           max={25}
           min={0.5}
           onChange={(v) => handleUpdate({ depth: v })}
@@ -272,9 +272,9 @@ export default function RoofSegmentPanel() {
         />
       </PanelSection>
 
-      <PanelSection title="Wall Height">
+      <PanelSection title={t('np.wallHeight')}>
         <SliderControl
-          label="Wall"
+          label={t('np.wall')}
           max={5}
           min={0}
           onChange={(v) => handleUpdate({ wallHeight: v })}
@@ -285,9 +285,9 @@ export default function RoofSegmentPanel() {
         />
       </PanelSection>
 
-      <PanelSection title="Pitch">
+      <PanelSection title={t('np.pitch')}>
         <SliderControl
-          label="Angle"
+          label={t('np.angle')}
           max={60}
           min={0}
           onChange={(v) => handleUpdate({ pitch: v })}
@@ -297,7 +297,7 @@ export default function RoofSegmentPanel() {
           value={Math.round(node.pitch)}
         />
         <div className="flex gap-1.5 px-1 pt-2 pb-1">
-          {PITCH_PRESETS.map((preset) => (
+          {PITCH_PRESETS(t).map((preset) => (
             <ActionButton
               key={preset.label}
               label={preset.label}
@@ -308,9 +308,9 @@ export default function RoofSegmentPanel() {
       </PanelSection>
 
       {node.roofType === 'gambrel' && (
-        <PanelSection title="Shape">
+        <PanelSection title={t('np.shape')}>
           <SliderControl
-            label="Kink Depth"
+            label={t('np.kinkDepth')}
             max={0.9}
             min={0.1}
             onChange={(v) => handleUpdate({ gambrelLowerWidthRatio: v })}
@@ -320,7 +320,7 @@ export default function RoofSegmentPanel() {
             value={Math.round(node.gambrelLowerWidthRatio * 100) / 100}
           />
           <SliderControl
-            label="Kink Height"
+            label={t('np.kinkHeight')}
             max={0.9}
             min={0.1}
             onChange={(v) => handleUpdate({ gambrelLowerHeightRatio: v })}
@@ -333,9 +333,9 @@ export default function RoofSegmentPanel() {
       )}
 
       {node.roofType === 'mansard' && (
-        <PanelSection title="Shape">
+        <PanelSection title={t('np.shape')}>
           <SliderControl
-            label="Waist Width"
+            label={t('np.waistWidth')}
             max={0.45}
             min={0.05}
             onChange={(v) => handleUpdate({ mansardSteepWidthRatio: v })}
@@ -345,7 +345,7 @@ export default function RoofSegmentPanel() {
             value={Math.round(node.mansardSteepWidthRatio * 100) / 100}
           />
           <SliderControl
-            label="Waist Height"
+            label={t('np.waistHeight')}
             max={0.9}
             min={0.1}
             onChange={(v) => handleUpdate({ mansardSteepHeightRatio: v })}
@@ -358,9 +358,9 @@ export default function RoofSegmentPanel() {
       )}
 
       {node.roofType === 'dutch' && (
-        <PanelSection title="Shape">
+        <PanelSection title={t('np.shape')}>
           <SliderControl
-            label="Waist Width"
+            label={t('np.waistWidth')}
             max={0.45}
             min={0.05}
             onChange={(v) => handleUpdate({ dutchHipWidthRatio: v })}
@@ -370,7 +370,7 @@ export default function RoofSegmentPanel() {
             value={Math.round(node.dutchHipWidthRatio * 100) / 100}
           />
           <SliderControl
-            label="Waist Height"
+            label={t('np.waistHeight')}
             max={0.9}
             min={0.1}
             onChange={(v) => handleUpdate({ dutchHipHeightRatio: v })}
@@ -380,7 +380,7 @@ export default function RoofSegmentPanel() {
             value={Math.round(node.dutchHipHeightRatio * 100) / 100}
           />
           <SliderControl
-            label="Waist Length"
+            label={t('np.waistLength')}
             max={1}
             min={0.1}
             onChange={(v) => handleUpdate({ dutchWaistLengthRatio: v })}
@@ -394,7 +394,7 @@ export default function RoofSegmentPanel() {
             }
           />
           <SliderControl
-            label="Top Rake Thick."
+            label={t('np.topRakeThick')}
             max={0.5}
             min={0.01}
             onChange={(v) => handleUpdate({ dutchTopRakeThickness: v })}
@@ -408,7 +408,7 @@ export default function RoofSegmentPanel() {
             }
           />
           <SliderControl
-            label="Top Rake Length"
+            label={t('np.topRakeLength')}
             max={3}
             min={0}
             onChange={(v) => handleUpdate({ dutchGabletRake: v })}
@@ -422,9 +422,9 @@ export default function RoofSegmentPanel() {
         </PanelSection>
       )}
 
-      <PanelSection title="Structure">
+      <PanelSection title={t('np.structure')}>
         <SliderControl
-          label="Wall Thick."
+          label={t('np.wallThick')}
           max={1}
           min={0.05}
           onChange={(v) => handleUpdate({ wallThickness: v })}
@@ -434,7 +434,7 @@ export default function RoofSegmentPanel() {
           value={Math.round(node.wallThickness * 100) / 100}
         />
         <SliderControl
-          label="Deck Thick."
+          label={t('np.deckThick')}
           max={0.3}
           min={0.04}
           onChange={(v) => handleUpdate({ deckThickness: v })}
@@ -444,7 +444,7 @@ export default function RoofSegmentPanel() {
           value={Math.round(node.deckThickness * 100) / 100}
         />
         <SliderControl
-          label="Overhang"
+          label={t('np.overhang')}
           max={1}
           min={0}
           onChange={(v) => handleUpdate({ overhang: v })}
@@ -454,7 +454,7 @@ export default function RoofSegmentPanel() {
           value={Math.round(node.overhang * 100) / 100}
         />
         <SliderControl
-          label="Shingle Thick."
+          label={t('np.shingleThick')}
           max={0.3}
           min={0.02}
           onChange={(v) => handleUpdate({ shingleThickness: v })}
@@ -465,9 +465,9 @@ export default function RoofSegmentPanel() {
         />
       </PanelSection>
 
-      <PanelSection title="Position">
+      <PanelSection title={t('np.position')}>
         <SliderControl
-          label="X"
+          label={t('np.x')}
           max={50}
           min={-50}
           onChange={(v) => {
@@ -481,7 +481,7 @@ export default function RoofSegmentPanel() {
           value={Math.round(node.position[0] * 100) / 100}
         />
         <SliderControl
-          label="Y"
+          label={t('np.y')}
           max={50}
           min={-50}
           onChange={(v) => {
@@ -495,7 +495,7 @@ export default function RoofSegmentPanel() {
           value={Math.round(node.position[1] * 100) / 100}
         />
         <SliderControl
-          label="Z"
+          label={t('np.z')}
           max={50}
           min={-50}
           onChange={(v) => {
@@ -509,7 +509,7 @@ export default function RoofSegmentPanel() {
           value={Math.round(node.position[2] * 100) / 100}
         />
         <SliderControl
-          label="Rotation"
+          label={t('np.rotation')}
           max={180}
           min={-180}
           onChange={(degrees) => {
@@ -522,14 +522,14 @@ export default function RoofSegmentPanel() {
         />
         <div className="flex gap-1.5 px-1 pt-2 pb-1">
           <ActionButton
-            label="-45°"
+            label={t('np.n452')}
             onClick={() => {
               triggerSFX('sfx:item-rotate')
               handleUpdate({ rotation: node.rotation - Math.PI / 4 })
             }}
           />
           <ActionButton
-            label="+45°"
+            label={t('np.n45')}
             onClick={() => {
               triggerSFX('sfx:item-rotate')
               handleUpdate({ rotation: node.rotation + Math.PI / 4 })
@@ -538,18 +538,18 @@ export default function RoofSegmentPanel() {
         </div>
       </PanelSection>
 
-      <PanelSection title="Actions">
+      <PanelSection title={t('np.actions')}>
         <ActionGroup>
-          <ActionButton icon={<Move className="h-3.5 w-3.5" />} label="Move" onClick={handleMove} />
+          <ActionButton icon={<Move className="h-3.5 w-3.5" />} label={t('np.move')} onClick={handleMove} />
           <ActionButton
             icon={<Copy className="h-3.5 w-3.5" />}
-            label="Duplicate"
+            label={t('np.duplicate')}
             onClick={handleDuplicate}
           />
           <ActionButton
             className="hover:bg-red-500/20"
             icon={<Trash2 className="h-3.5 w-3.5 text-red-400" />}
-            label="Delete"
+            label={t('np.delete')}
             onClick={handleDelete}
           />
         </ActionGroup>
