@@ -43,7 +43,8 @@ const COMPARTMENT_TYPE_OPTIONS = (t: TranslateFn) => [
 
 const FRIDGE_TYPE_OPTION = (t: TranslateFn) => ({ value: 'fridge', label: t('np.fridge') }) as const
 const HOOD_TYPE_OPTION = (t: TranslateFn) => ({ value: 'hood', label: t('np.chimney') }) as const
-const COMPARTMENT_TYPE_CONTROL_OPTIONS = [...COMPARTMENT_TYPE_OPTIONS(t), FRIDGE_TYPE_OPTION(t)] as const
+const COMPARTMENT_TYPE_CONTROL_OPTIONS = (t: TranslateFn) =>
+  [...COMPARTMENT_TYPE_OPTIONS(t), FRIDGE_TYPE_OPTION(t)] as const
 const WALL_COMPARTMENT_TYPE_CONTROL_OPTIONS = (t: TranslateFn) => [
   { value: 'shelf', label: t('np.shelf') },
   { value: 'drawer', label: t('np.drawer') },
@@ -153,8 +154,8 @@ function CompartmentTypeControl({
   const options = wallCabinet
     ? WALL_COMPARTMENT_TYPE_CONTROL_OPTIONS(t)
     : includeHood
-      ? [...COMPARTMENT_TYPE_CONTROL_OPTIONS, HOOD_TYPE_OPTION(t)]
-      : COMPARTMENT_TYPE_CONTROL_OPTIONS
+      ? [...COMPARTMENT_TYPE_CONTROL_OPTIONS(t), HOOD_TYPE_OPTION(t)]
+      : COMPARTMENT_TYPE_CONTROL_OPTIONS(t)
   return (
     <div className="grid w-full grid-cols-3 gap-1 rounded-lg border border-border/50 bg-[#2C2C2E] p-[3px]">
       {options.map((option) => {
