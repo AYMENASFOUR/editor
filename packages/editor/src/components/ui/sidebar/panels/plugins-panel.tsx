@@ -4,6 +4,7 @@ import { Icon } from '@iconify/react'
 import { type IconRef, useScene } from '@pascal-app/core'
 import { ChevronLeft, ChevronRight, ExternalLink, Puzzle } from 'lucide-react'
 import { lazy, type ReactNode, Suspense, useState, useSyncExternalStore } from 'react'
+import { useI18n } from '../../../../i18n'
 import { editorHostPanelRegistry } from '../../../../lib/plugin-panels'
 import { Button } from '../../primitives/button'
 
@@ -33,6 +34,7 @@ function renderPluginIcon(ref: IconRef): ReactNode {
 }
 
 export function PluginsPanel() {
+  const { t } = useI18n()
   const [selectedPluginId, setSelectedPluginId] = useState<string | null>(null)
   const panels = useSyncExternalStore(
     editorHostPanelRegistry.subscribe,
@@ -77,13 +79,13 @@ export function PluginsPanel() {
             <div className="min-w-0 pt-1">
               <h2 className="font-semibold text-lg text-sidebar-foreground">{panel.label}</h2>
               <p className="text-sidebar-foreground/50 text-sm">
-                {installed ? 'Installed' : 'Not installed'}
+                {installed ? t('plugins.installed') : t('plugins.notInstalled')}
               </p>
             </div>
           </div>
 
           <p className="mt-5 text-sidebar-foreground/70 text-sm">
-            {panel.description ?? 'Adds a new tool panel to the editor.'}
+            {panel.description ?? t('plugins.defaultDescription')}
           </p>
 
           <dl className="mt-6 divide-y divide-border/50 rounded-xl border border-border/60">
@@ -140,7 +142,7 @@ export function PluginsPanel() {
             }}
             variant={installed ? 'outline' : 'default'}
           >
-            {installed ? 'Uninstall' : 'Install'}
+            {installed ? t('plugins.uninstall') : t('plugins.install')}
           </Button>
         </div>
 
@@ -187,13 +189,13 @@ export function PluginsPanel() {
                     <div>
                       <h3 className="font-medium text-sidebar-foreground">{panel.label}</h3>
                       <p className="text-sidebar-foreground/50 text-xs">
-                        {installed ? 'Installed' : 'Not installed'}
+                        {installed ? t('plugins.installed') : t('plugins.notInstalled')}
                       </p>
                     </div>
                     <ChevronRight className="h-4 w-4 shrink-0 text-sidebar-foreground/50" />
                   </div>
                   <p className="mt-2 text-sidebar-foreground/60 text-sm">
-                    {panel.description ?? 'Adds a new tool panel to the editor.'}
+                    {panel.description ?? t('plugins.defaultDescription')}
                   </p>
                 </div>
               </div>

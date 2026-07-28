@@ -13,6 +13,7 @@ import { useViewer } from '@pascal-app/viewer'
 import { ArrowLeft, ChevronRight, Layers } from 'lucide-react'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
+import { useI18n } from '../../i18n'
 import { useShallow } from 'zustand/react/shallow'
 import { cn } from '../../lib/utils'
 
@@ -46,6 +47,7 @@ export const ViewerSceneHeader = ({
   backHref = '/',
   stats,
 }: ViewerSceneHeaderProps) => {
+  const { t } = useI18n()
   const selection = useViewer((s) => s.selection)
 
   // Subscribe only to the specific nodes we read so that creating an unrelated
@@ -100,7 +102,7 @@ export const ViewerSceneHeader = ({
         <div className="flex items-center gap-3 px-3 py-2.5">
           {onBack ? (
             <button
-              aria-label="Back"
+              aria-label={t('menus.back')}
               className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md transition-colors hover:bg-white/10"
               onClick={onBack}
               type="button"
@@ -109,7 +111,7 @@ export const ViewerSceneHeader = ({
             </button>
           ) : (
             <Link
-              aria-label="Back"
+              aria-label={t('menus.back')}
               className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md transition-colors hover:bg-white/10"
               href={backHref}
               prefetch={false}
@@ -119,7 +121,7 @@ export const ViewerSceneHeader = ({
           )}
           <div className="min-w-0 flex-1">
             <div className="truncate font-medium text-foreground text-sm">
-              {projectName || 'Untitled'}
+              {projectName || t('menus.untitled')}
             </div>
             {owner?.username && (
               <Link
@@ -152,7 +154,7 @@ export const ViewerSceneHeader = ({
                 className={`truncate transition-colors ${level ? 'text-muted-foreground hover:text-foreground' : 'font-medium text-foreground'}`}
                 onClick={() => handleBreadcrumbClick('building')}
               >
-                {building.name || 'Building'}
+                {building.name || t('menus.building')}
               </button>
 
               {level && (

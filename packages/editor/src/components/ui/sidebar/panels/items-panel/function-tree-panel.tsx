@@ -5,6 +5,7 @@ import { Root as TooltipRoot } from '@radix-ui/react-tooltip'
 import NextImage from 'next/image'
 import { useMemo, useState } from 'react'
 import { triggerSFX } from '../../../../../lib/sfx-bus'
+import { type TranslationKey, useI18n } from '../../../../../i18n'
 import { cn } from '../../../../../lib/utils'
 import { ItemCatalog } from '../../../item-catalog/item-catalog'
 import {
@@ -21,10 +22,10 @@ export type FunctionTreeNode = {
   children: FunctionTreeNode[]
 }
 
-const SOURCE_CHIPS: Array<{ id: NonNullable<AssetInput['source']>; label: string }> = [
-  { id: 'library', label: 'Library' },
-  { id: 'community', label: 'Community' },
-  { id: 'mine', label: 'Mine' },
+const SOURCE_CHIPS: Array<{ id: NonNullable<AssetInput['source']>; labelKey: TranslationKey }> = [
+  { id: 'library', labelKey: 'items.library' },
+  { id: 'community', labelKey: 'items.community' },
+  { id: 'mine', labelKey: 'items.mine' },
 ]
 
 /** Every slug at or below `node`, so a non-leaf selection matches descendants. */
@@ -64,6 +65,7 @@ export function FunctionTreePanel({
   leadingTile?: React.ReactNode
   emptyState?: React.ReactNode
 }) {
+  const { t } = useI18n()
   const [activeRootSlug, setActiveRootSlug] = useState<string | null>(
     functionTree[0]?.slug ?? null,
   )
@@ -173,7 +175,7 @@ export function FunctionTreePanel({
               setSearch(e.target.value)
               onSearchChange?.(e.target.value)
             }}
-            placeholder="Search..."
+            placeholder={t('items.search')}
             type="text"
             value={search}
           />
@@ -192,7 +194,7 @@ export function FunctionTreePanel({
                   onClick={() => setActiveSource(isActive ? null : chip.id)}
                   type="button"
                 >
-                  {chip.label}
+                  {t(chip.labelKey)}
                 </button>
               )
             })}
