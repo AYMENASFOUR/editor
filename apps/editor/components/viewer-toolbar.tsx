@@ -37,6 +37,7 @@ import {
   EyeOff,
   Footprints,
   Grid2X2,
+  Languages,
   Layers3,
   Magnet,
   PenLine,
@@ -729,6 +730,26 @@ function WalkthroughButton() {
   )
 }
 
+// One-click English ⇄ العربية toggle. Kept in the always-visible toolbar so
+// the language choice is discoverable without opening a panel; it flips the
+// whole UI to RTL for Arabic. The label shows the language you'd switch TO.
+function LanguageToggle() {
+  const { locale, setLocale, t } = useI18n()
+  return (
+    <ToolbarTooltip label={t('toolbar.language')}>
+      <button
+        aria-label={t('toolbar.language')}
+        className={cn(TOOLBAR_BTN, 'w-auto gap-1.5 px-2.5 text-foreground/90')}
+        onClick={() => setLocale(locale === 'ar' ? 'en' : 'ar')}
+        type="button"
+      >
+        <Languages className="h-3.5 w-3.5 shrink-0" />
+        <span className="font-medium text-xs">{locale === 'ar' ? 'EN' : 'ع'}</span>
+      </button>
+    </ToolbarTooltip>
+  )
+}
+
 function PreviewButton() {
   const { t } = useI18n()
   return (
@@ -762,6 +783,8 @@ export function CommunityViewerToolbarRight() {
       <WallModeToggle />
       <div className="my-1.5 w-px bg-border/50" />
       <DisplayMenu />
+      <div className="my-1.5 w-px bg-border/50" />
+      <LanguageToggle />
       <div className="my-1.5 w-px bg-border/50" />
       <WalkthroughButton />
       <PreviewButton />

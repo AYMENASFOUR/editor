@@ -39,6 +39,7 @@ export {
 } from './i18n'
 export type { EditorProps } from './components/editor'
 export { default as Editor } from './components/editor'
+export { LanguageSwitcher } from './components/ui/sidebar/panels/settings-panel/language-switcher'
 // Headless component aliases: the implementation files keep their
 // internal names (`ParametricInspector`, `FloatingActionMenu`) because
 // they're referenced throughout the editor's own internals; the public

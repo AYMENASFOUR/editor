@@ -271,6 +271,7 @@ export const ar: Messages = {
     walkthrough: 'جولة افتراضية',
     previewMode: 'وضع المعاينة',
     preview: 'معاينة',
+    language: 'اللغة',
   },
   settings: {
     title: 'الإعدادات',

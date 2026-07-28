@@ -1,6 +1,6 @@
 'use client'
 
-import { Editor, ItemsPanel, type TranslationKey, useI18n } from '@pascal-app/editor'
+import { Editor, ItemsPanel, LanguageSwitcher, type TranslationKey, useI18n } from '@pascal-app/editor'
 import { Hammer, Layers, Package, Settings } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -70,7 +70,11 @@ const SIDEBAR_TABS = [
   {
     id: 'settings',
     label: 'Settings',
-    component: () => null,
+    component: () => (
+      <div className="p-3">
+        <LanguageSwitcher />
+      </div>
+    ),
     mobileDefaultSnap: 0.5,
     mobileIcon: <Settings className="h-5 w-5" />,
     icon: (

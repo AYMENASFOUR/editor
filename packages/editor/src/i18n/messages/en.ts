@@ -274,6 +274,7 @@ export const en = {
     walkthrough: 'Walkthrough',
     previewMode: 'Preview mode',
     preview: 'Preview',
+    language: 'Language',
   },
   settings: {
     title: 'Settings',
