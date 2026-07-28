@@ -697,6 +697,9 @@ export const en = {
     invalidJson: 'File could not be parsed as JSON.',
   },
   np: {
+    create: 'Create',
+    snappedToDuct: 'Snapped to duct',
+    extrusionHeight: 'Extrusion height',
     currently: 'Currently',
     segment: 'Segment',
     level: 'Level',

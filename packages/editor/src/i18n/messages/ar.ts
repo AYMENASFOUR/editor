@@ -692,6 +692,9 @@ export const ar: Messages = {
     invalidJson: 'تعذّر تحليل الملف كـ JSON.',
   },
   np: {
+    create: 'إنشاء',
+    snappedToDuct: 'تم الالتصاق بالمجرى',
+    extrusionHeight: 'ارتفاع البثق',
     currently: 'حالياً',
     segment: 'مقطع',
     level: 'المستوى',

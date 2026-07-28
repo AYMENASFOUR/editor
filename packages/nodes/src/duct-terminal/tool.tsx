@@ -20,6 +20,7 @@ import {
   isMagneticSnapActive,
   triggerSFX,
   useEditor,
+  useI18n,
 } from '@pascal-app/editor'
 import { useViewer } from '@pascal-app/viewer'
 import { Html } from '@react-three/drei'
@@ -150,6 +151,7 @@ function resolvePortSnap(
  * yaw ±45°; wall yaw is fixed by the wall it mates to.
  */
 const DuctTerminalTool = () => {
+  const { t } = useI18n()
   const { camera, gl } = useThree()
   const activeLevelId = useViewer((s) => s.selection.levelId)
   const [mount, setMount] = useState<Mount>('floor')
@@ -422,7 +424,7 @@ const DuctTerminalTool = () => {
         <div className="flex items-center gap-2 whitespace-nowrap rounded-full border border-border/60 bg-background/90 px-4 py-1.5 text-xs tabular-nums shadow-sm backdrop-blur">
           {placement.snapped && (
             <>
-              <span className="font-medium text-primary">Snapped to duct</span>
+              <span className="font-medium text-primary">{t('np.snappedToDuct')}</span>
               <span aria-hidden className="text-muted-foreground">
                 ·
               </span>
