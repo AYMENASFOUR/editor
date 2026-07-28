@@ -293,6 +293,23 @@ export const en = {
     showReferenceFloor: 'Show reference floor',
     riserDiagram: 'Riser diagram',
   },
+  scenePage: {
+    creating: 'Creating…',
+    newSceneName: 'New scene name',
+    createNewScene: 'Create new scene',
+    untitledScene: 'Untitled scene',
+    failedToCreate: 'Failed to create scene',
+    noSceneToSave: 'No scene to save',
+    saved: 'Saved',
+    saveFailed: 'Save failed',
+    saveFailedCode: 'Save failed ({code})',
+    conflict: 'Conflict — reload to continue',
+    liveClosed: 'Live scene connection closed',
+    conflictTitle: 'Another session saved first — refresh?',
+    conflictBody: "Your changes haven't been saved. Reload to pick up the latest version.",
+    reload: 'Reload',
+    dismiss: 'Dismiss',
+  },
   pages: {
     home: 'Home',
     scenes: {

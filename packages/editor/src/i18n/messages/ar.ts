@@ -289,6 +289,23 @@ export const ar: Messages = {
     showReferenceFloor: 'إظهار الأرضية المرجعية',
     riserDiagram: 'مخطط الصاعد',
   },
+  scenePage: {
+    creating: 'جارٍ الإنشاء…',
+    newSceneName: 'اسم المشهد الجديد',
+    createNewScene: 'إنشاء مشهد جديد',
+    untitledScene: 'مشهد بدون عنوان',
+    failedToCreate: 'تعذّر إنشاء المشهد',
+    noSceneToSave: 'لا يوجد مشهد للحفظ',
+    saved: 'تم الحفظ',
+    saveFailed: 'فشل الحفظ',
+    saveFailedCode: 'فشل الحفظ ({code})',
+    conflict: 'تعارض — أعد التحميل للمتابعة',
+    liveClosed: 'انقطع الاتصال المباشر بالمشهد',
+    conflictTitle: 'جلسة أخرى حفظت أولاً — تحديث؟',
+    conflictBody: 'لم تُحفظ تغييراتك. أعد التحميل لجلب أحدث نسخة.',
+    reload: 'إعادة التحميل',
+    dismiss: 'تجاهل',
+  },
   pages: {
     home: 'الرئيسية',
     scenes: {

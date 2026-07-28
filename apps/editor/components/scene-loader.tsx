@@ -8,6 +8,8 @@ import {
   Editor,
   type SceneGraph,
   type SidebarTab,
+  type TranslationKey,
+  useI18n,
 } from '@pascal-app/editor'
 import { Hammer, Layers } from 'lucide-react'
 import Image from 'next/image'
@@ -93,6 +95,11 @@ function sceneGraphSignature(graph: SceneGraphWithCollections): string {
 }
 
 export function SceneLoader({ initialScene, meta }: SceneLoaderProps) {
+  const { t } = useI18n()
+  const sidebarTabs = SIDEBAR_TABS.map((tab) => {
+    const key: TranslationKey | undefined = tab.id === 'site' ? 'nav.scene' : tab.id === 'build' ? 'nav.build' : undefined
+    return key ? { ...tab, label: t(key) } : tab
+  })
   const router = useRouter()
   const versionRef = useRef(meta.version)
   const lastRemoteGraphJsonRef = useRef<string | null>(null)
@@ -134,7 +141,7 @@ export function SceneLoader({ initialScene, meta }: SceneLoaderProps) {
         }
 
         if (!response.ok) {
-          setSaveError(`Save failed (${response.status})`)
+          setSaveError(t('scenePage.saveFailedCode', { code: response.status }))
           return
         }
 
@@ -142,7 +149,7 @@ export function SceneLoader({ initialScene, meta }: SceneLoaderProps) {
         versionRef.current = next.version
         setSaveError(null)
       } catch (error) {
-        setSaveError(error instanceof Error ? error.message : 'Save failed')
+        setSaveError(error instanceof Error ? error.message : t('scenePage.saveFailed'))
       }
     },
     [meta.id, meta.name],
@@ -171,7 +178,7 @@ export function SceneLoader({ initialScene, meta }: SceneLoaderProps) {
 
     source.addEventListener('error', () => {
       if (source.readyState === EventSource.CLOSED) {
-        setSaveError('Live scene connection closed')
+        setSaveError(t('scenePage.liveClosed'))
       }
     })
 
@@ -196,9 +203,9 @@ export function SceneLoader({ initialScene, meta }: SceneLoaderProps) {
     <div className="relative h-screen w-screen">
       {conflict && (
         <div className="pointer-events-auto absolute top-4 left-1/2 z-50 w-full max-w-md -translate-x-1/2 rounded-lg border border-border bg-background p-4 shadow-xl">
-          <h2 className="font-semibold text-sm">Another session saved first — refresh?</h2>
+          <h2 className="font-semibold text-sm">{t('scenePage.conflictTitle')}</h2>
           <p className="mt-1 text-muted-foreground text-xs">
-            Your changes haven&apos;t been saved. Reload to pick up the latest version.
+            {t('scenePage.conflictBody')}
           </p>
           <div className="mt-3 flex items-center gap-2">
             <button
@@ -206,14 +213,14 @@ export function SceneLoader({ initialScene, meta }: SceneLoaderProps) {
               onClick={() => router.refresh()}
               type="button"
             >
-              Reload
+              {t('scenePage.reload')}
             </button>
             <button
               className="rounded-md border border-border bg-background px-3 py-1.5 font-medium text-xs hover:bg-accent/40"
               onClick={() => setConflict(false)}
               type="button"
             >
-              Dismiss
+              {t('scenePage.dismiss')}
             </button>
           </div>
         </div>
@@ -237,7 +244,7 @@ export function SceneLoader({ initialScene, meta }: SceneLoaderProps) {
         onSave={handleSave}
         onThumbnailCapture={handleThumb}
         projectId={meta.projectId ?? 'default'}
-        sidebarTabs={SIDEBAR_TABS}
+        sidebarTabs={sidebarTabs}
         viewerToolbarLeft={<CommunityViewerToolbarLeft />}
         viewerToolbarRight={<CommunityViewerToolbarRight />}
       />
