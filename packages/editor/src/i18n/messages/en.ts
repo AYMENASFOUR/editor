@@ -18,7 +18,6 @@ export const en = {
     confirm: 'Confirm',
     save: 'Save',
     delete: 'Delete',
-    close: 'Close',
     done: 'Done',
     back: 'Back',
     next: 'Next',
@@ -713,6 +712,7 @@ export const en = {
     invalidJson: 'File could not be parsed as JSON.',
   },
   np: {
+    objectsSelected: 'objects selected',
     closeCaptureMode: 'Close capture mode',
     cameraControlsHint: 'Camera controls hint',
     dismissCameraControlsHint: 'Dismiss camera controls hint',

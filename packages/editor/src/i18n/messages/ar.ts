@@ -16,7 +16,6 @@ export const ar: Messages = {
     confirm: 'تأكيد',
     save: 'حفظ',
     delete: 'حذف',
-    close: 'إغلاق',
     done: 'تم',
     back: 'رجوع',
     next: 'التالي',
@@ -708,6 +707,7 @@ export const ar: Messages = {
     invalidJson: 'تعذّر تحليل الملف كـ JSON.',
   },
   np: {
+    objectsSelected: 'عنصر محدّد',
     closeCaptureMode: 'إغلاق وضع الالتقاط',
     cameraControlsHint: 'تلميح أدوات التحكم بالكاميرا',
     dismissCameraControlsHint: 'إخفاء تلميح أدوات التحكم بالكاميرا',

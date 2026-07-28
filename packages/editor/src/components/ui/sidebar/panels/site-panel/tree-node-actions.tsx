@@ -14,6 +14,7 @@ interface TreeNodeActionsProps {
 }
 
 export const TreeNodeActions = memo(function TreeNodeActions({ nodeId }: TreeNodeActionsProps) {
+  const { t } = useI18n()
   const [open, setOpen] = useState(false)
   const updateNode = useScene((state) => state.updateNode)
   const updateNodes = useScene((state) => state.updateNodes)

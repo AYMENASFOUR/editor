@@ -151,6 +151,7 @@ function CompartmentTypeControl({
   includeHood?: boolean
   wallCabinet?: boolean
 }) {
+  const { t } = useI18n()
   const options = wallCabinet
     ? WALL_COMPARTMENT_TYPE_CONTROL_OPTIONS(t)
     : includeHood
