@@ -1,9 +1,8 @@
 'use client'
 
-import type { SceneGraph } from '@pascal-app/editor'
+import { type SceneGraph, useI18n } from '@pascal-app/editor'
 import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
-import { useI18n } from '-app/editor'
 
 const EMPTY_GRAPH: SceneGraph = {
   nodes: {},
