@@ -1,5 +1,9 @@
 import { describe, expect, test } from 'bun:test'
+import { createTranslator } from '../i18n'
 import { resolveSelectModeHelpHints } from './contextual-help'
+
+// English translator: keys resolve to the same strings the tests assert.
+const t = createTranslator('en')
 
 describe('resolveSelectModeHelpHints', () => {
   test('stays hidden in idle select mode with no selection', () => {
@@ -10,7 +14,7 @@ describe('resolveSelectModeHelpHints', () => {
         hasRotatableSelection: false,
         commandPressed: false,
         shiftPressed: false,
-      }),
+      }, t),
     ).toEqual([])
   })
 
@@ -22,7 +26,7 @@ describe('resolveSelectModeHelpHints', () => {
         hasRotatableSelection: false,
         commandPressed: true,
         shiftPressed: false,
-      }),
+      }, t),
     ).toEqual([
       {
         keys: [['Cmd/Ctrl', 'Shift'], 'Left click'],
@@ -39,7 +43,7 @@ describe('resolveSelectModeHelpHints', () => {
       hasRotatableSelection: true,
       commandPressed: false,
       shiftPressed: false,
-    })
+    }, t)
 
     expect(hints).toContainEqual({
       keys: ['Left click'],
@@ -65,7 +69,7 @@ describe('resolveSelectModeHelpHints', () => {
       hasRotatableSelection: true,
       commandPressed: false,
       shiftPressed: false,
-    })
+    }, t)
 
     expect(hints).toEqual([
       {
@@ -91,7 +95,7 @@ describe('resolveSelectModeHelpHints', () => {
       hasRotatableSelection: true,
       commandPressed: true,
       shiftPressed: true,
-    })
+    }, t)
 
     expect(hints).toEqual([
       {

@@ -145,8 +145,8 @@ export function HelperManager() {
       commandPressed: modifiers.command,
       shiftPressed: modifiers.shift,
       mepSelection,
-    })
-  }, [modifiers.command, modifiers.shift, selectedNodes])
+    }, t)
+  }, [modifiers.command, modifiers.shift, selectedNodes, t])
 
   // Helpers are keyboard-driven hints (Esc, R, etc.) — irrelevant on touch.
   if (isMobile) return null
@@ -167,7 +167,7 @@ export function HelperManager() {
     activeHandleDrag?.label === ROTATE_HANDLE_DRAG_LABEL ||
     activeHandleDrag?.label === GROUP_ROTATE_DRAG_LABEL
   ) {
-    return <ContextualHelperPanel hints={resolveRotateHandleHelpHints(modifiers.shift)} />
+    return <ContextualHelperPanel hints={resolveRotateHandleHelpHints(modifiers.shift, t)} />
   }
 
   // Group-move drag / pick-up: the drag resolves to the 'item' snap context
@@ -176,7 +176,7 @@ export function HelperManager() {
   if (activeHandleDrag?.label === GROUP_MOVE_DRAG_LABEL) {
     return (
       <ContextualHelperPanel
-        hints={[{ keys: ['R / T'], label: 'Rotate the selection ±45°' }]}
+        hints={[{ keys: ['R / T'], label: t('helper.rotateSelection45') }]}
         snapContext={snapContext}
       />
     )
@@ -228,9 +228,9 @@ export function HelperManager() {
     return (
       <ContextualHelperPanel
         hints={[
-          { keys: ['Hover'], label: 'Inspect surface dimensions' },
-          { keys: ['Click'], label: 'Pin measurement lens' },
-          { keys: ['Esc'], label: 'Exit smart measure' },
+          { keys: ['Hover'], label: t('helper.inspectSurfaceDimensions') },
+          { keys: ['Click'], label: t('helper.pinMeasurementLens') },
+          { keys: ['Esc'], label: t('helper.exitSmartMeasure') },
         ]}
       />
     )
