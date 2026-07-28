@@ -70,6 +70,30 @@ export const ar: Messages = {
     measurementType: 'نوع القياس',
     floorPlan: 'المخطط الأفقي',
   },
+  hud: {
+    click: 'انقر',
+    or: 'أو',
+    toResume: 'للاستئناف',
+    freeCursor: 'تحرير المؤشّر',
+    orClickTo: 'أو انقر لـ',
+  },
+  levelSelector: {
+    reorder: 'إعادة ترتيب {name}',
+    dragToReorder: 'اسحب لإعادة الترتيب',
+    levelHeight: 'ارتفاع الطابق',
+    addLevelAbove: 'إضافة طابق أعلى',
+    addLevelBelow: 'إضافة طابق أسفل',
+    insertLevelHere: 'إدراج طابق هنا',
+    deleteLevel: 'حذف الطابق',
+    deleteConfirm:
+      'هل أنت متأكد من حذف {name}؟ سيتم حذف كل الجدران والأرضيات والعناصر في هذا الطابق نهائياً.',
+  },
+  ui: {
+    opacity: 'الشفافية',
+    leftClick: 'النقر الأيسر',
+    middleClick: 'النقر الأوسط',
+    rightClick: 'النقر الأيمن',
+  },
   items: {
     search: 'بحث…',
     library: 'المكتبة',

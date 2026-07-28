@@ -1,26 +1,27 @@
 import { Icon } from '@iconify/react'
 import type * as React from 'react'
 
+import { type TranslationKey, useI18n } from '../../../i18n'
 import { cn } from '../../../lib/utils'
 
 const MOUSE_SHORTCUTS = {
   Click: {
     icon: 'ph:mouse-left-click-fill',
-    label: 'Left click',
+    labelKey: 'ui.leftClick',
   },
   'Left click': {
     icon: 'ph:mouse-left-click-fill',
-    label: 'Left click',
+    labelKey: 'ui.leftClick',
   },
   'Middle click': {
     icon: 'qlementine-icons:mouse-middle-button-16',
-    label: 'Middle click',
+    labelKey: 'ui.middleClick',
   },
   'Right click': {
     icon: 'ph:mouse-right-click-fill',
-    label: 'Right click',
+    labelKey: 'ui.rightClick',
   },
-} as const
+} as const satisfies Record<string, { icon: string; labelKey: TranslationKey }>
 
 // The platform-agnostic command modifier. Both Cmd and Ctrl bind the action; we
 // render the symbol for the *current* device so the hint reads native (⌘ on Mac,
@@ -39,8 +40,10 @@ type ShortcutTokenProps = React.ComponentProps<'kbd'> & {
 }
 
 function ShortcutToken({ className, displayValue, value, ...props }: ShortcutTokenProps) {
+  const { t } = useI18n()
   const mouseShortcut =
     value in MOUSE_SHORTCUTS ? MOUSE_SHORTCUTS[value as keyof typeof MOUSE_SHORTCUTS] : null
+  const mouseLabel = mouseShortcut ? t(mouseShortcut.labelKey) : null
   const isCommand = COMMAND_VALUES.has(value)
   const isShift = value === 'Shift'
   const commandDisplay = IS_MAC ? '⌘' : 'Ctrl'
@@ -49,15 +52,14 @@ function ShortcutToken({ className, displayValue, value, ...props }: ShortcutTok
   return (
     <kbd
       aria-label={
-        mouseShortcut?.label ??
-        (isCommand ? commandLabel : isShift ? 'Shift' : (displayValue ?? value))
+        mouseLabel ?? (isCommand ? commandLabel : isShift ? 'Shift' : (displayValue ?? value))
       }
       className={cn(
         'inline-flex h-6 items-center rounded border border-border bg-muted px-2 font-medium font-mono text-[11px] text-muted-foreground',
         (mouseShortcut || isShift) && 'justify-center px-1.5',
         className,
       )}
-      title={mouseShortcut?.label ?? (isCommand ? commandLabel : isShift ? 'Shift' : value)}
+      title={mouseLabel ?? (isCommand ? commandLabel : isShift ? 'Shift' : value)}
       {...props}
     >
       {mouseShortcut ? (
@@ -70,7 +72,7 @@ function ShortcutToken({ className, displayValue, value, ...props }: ShortcutTok
             icon={mouseShortcut.icon}
             width={14}
           />
-          <span className="sr-only">{mouseShortcut.label}</span>
+          <span className="sr-only">{mouseLabel}</span>
         </>
       ) : isShift ? (
         // Icon rather than the ⇧ text glyph — the font renders the glyph's

@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { Button } from '../../../components/ui/primitives/button'
 import { Popover, PopoverContent, PopoverTrigger } from '../../../components/ui/primitives/popover'
 import { Slider } from '../../../components/ui/primitives/slider'
+import { useI18n } from '../../../i18n'
 import { cn } from '../../../lib/utils'
 
 interface OpacityControlProps {
@@ -22,6 +23,7 @@ export function OpacityControl({
   onOpacityChange,
   className,
 }: OpacityControlProps) {
+  const { t } = useI18n()
   const [isOpen, setIsOpen] = useState(false)
   const actualOpacity = opacity ?? 100
   const isHidden = visible === false || actualOpacity === 0
@@ -59,7 +61,7 @@ export function OpacityControl({
         >
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="font-medium text-sm">Opacity</span>
+              <span className="font-medium text-sm">{t('ui.opacity')}</span>
               <span className="text-muted-foreground text-xs">{actualOpacity}%</span>
             </div>
             <Slider

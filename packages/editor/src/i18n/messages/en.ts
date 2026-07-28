@@ -72,6 +72,30 @@ export const en = {
     measurementType: 'Measurement type',
     floorPlan: 'Floor plan',
   },
+  hud: {
+    click: 'Click',
+    or: 'or',
+    toResume: 'to resume',
+    freeCursor: 'free cursor',
+    orClickTo: 'or click to',
+  },
+  levelSelector: {
+    reorder: 'Reorder {name}',
+    dragToReorder: 'Drag to reorder',
+    levelHeight: 'Level height',
+    addLevelAbove: 'Add level above',
+    addLevelBelow: 'Add level below',
+    insertLevelHere: 'Insert level here',
+    deleteLevel: 'Delete level',
+    deleteConfirm:
+      'Are you sure you want to delete {name}? All walls, floors, and objects on this level will be permanently removed.',
+  },
+  ui: {
+    opacity: 'Opacity',
+    leftClick: 'Left click',
+    middleClick: 'Middle click',
+    rightClick: 'Right click',
+  },
   items: {
     search: 'Search…',
     library: 'Library',
