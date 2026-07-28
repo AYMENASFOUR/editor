@@ -18,7 +18,6 @@ import { en, type Messages } from './messages/en'
 import {
   DEFAULT_LOCALE,
   type Direction,
-  isLocale,
   LOCALE_COOKIE,
   LOCALE_DIRECTION,
   LOCALE_STORAGE_KEY,
@@ -148,5 +147,8 @@ export function useTranslate(): TranslateFn {
   return useI18n().t
 }
 
-export { isLocale, LOCALE_COOKIE, LOCALE_STORAGE_KEY, DEFAULT_LOCALE, LOCALE_DIRECTION }
+// Only types are re-exported here. Pure runtime constants/helpers live in
+// `./types` and are surfaced through `./index` directly, so they never pass
+// through this `'use client'` module (which would make them client references
+// on the server).
 export type { Locale, Direction }
