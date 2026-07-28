@@ -15,6 +15,7 @@ import {
   resolvePaintTargetFromSelection,
 } from './../../../lib/material-paint'
 import useEditor from './../../../store/use-editor'
+import { useI18n } from '../../../i18n'
 import { Button } from '../primitives/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../primitives/tooltip'
 import { MaterialPicker } from './material-picker'
@@ -33,6 +34,7 @@ export type MaterialPaintPanelProps = {
 }
 
 export function MaterialPaintPanel({ onCreateMaterialRequest }: MaterialPaintPanelProps) {
+  const { t } = useI18n()
   const activePaintMaterial = useEditor((state) => state.activePaintMaterial)
   const activePaintTarget = useEditor((state) => state.activePaintTarget)
   const setActivePaintMaterial = useEditor((state) => state.setActivePaintMaterial)
@@ -131,7 +133,7 @@ export function MaterialPaintPanel({ onCreateMaterialRequest }: MaterialPaintPan
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                aria-label="Add material"
+                aria-label={t('materials.addMaterial')}
                 onClick={createCustomMaterial}
                 size="icon-sm"
                 type="button"
@@ -140,7 +142,7 @@ export function MaterialPaintPanel({ onCreateMaterialRequest }: MaterialPaintPan
                 <Plus />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Add material</TooltipContent>
+            <TooltipContent>{t('materials.addMaterial')}</TooltipContent>
           </Tooltip>
         </div>
         <div className="subtle-scrollbar max-h-56 overflow-y-auto">

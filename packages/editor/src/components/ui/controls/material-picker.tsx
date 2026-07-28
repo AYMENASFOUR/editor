@@ -1,5 +1,6 @@
 'use client'
 
+import { type TranslationKey, useI18n } from '../../../i18n'
 import {
   getCatalogMaterialById,
   getDynamicLibraryMaterials,
@@ -28,12 +29,12 @@ export type MaterialPickerProps = {
   onCreateMaterialRequest?: () => void
 }
 
-const SOURCE_FILTERS: { id: MaterialSourceFilter; label: string }[] = [
-  { id: 'all', label: 'All' },
-  { id: 'pascal', label: 'Pascal' },
-  { id: 'mine', label: 'Mine' },
-  { id: 'workspace', label: 'Workspace' },
-  { id: 'community', label: 'Community' },
+const SOURCE_FILTERS: { id: MaterialSourceFilter; labelKey: TranslationKey }[] = [
+  { id: 'all', labelKey: 'materials.all' },
+  { id: 'pascal', labelKey: 'materials.pascal' },
+  { id: 'mine', labelKey: 'materials.mine' },
+  { id: 'workspace', labelKey: 'materials.workspace' },
+  { id: 'community', labelKey: 'materials.community' },
 ]
 
 function getCategoryLabel(category: (typeof MATERIAL_CATEGORIES)[number]) {
@@ -60,6 +61,7 @@ export function MaterialPicker({
   const [selectedCategory, setSelectedCategory] = useState<(typeof MATERIAL_CATEGORIES)[number]>(
     MATERIAL_CATEGORIES[0],
   )
+  const { t } = useI18n()
   const [sourceFilter, setSourceFilter] = useState<MaterialSourceFilter>('all')
   // Version counter so host registrations/unregistrations re-render the picker.
   const libraryVersion = useSyncExternalStore(
@@ -138,7 +140,7 @@ export function MaterialPicker({
             onMouseEnter={() => triggerSFX('sfx:menu-hover')}
             type="button"
           >
-            {filter.label}
+            {t(filter.labelKey)}
           </button>
         ))}
       </div>
@@ -160,8 +162,8 @@ export function MaterialPicker({
             <div className="flex aspect-square w-full items-center justify-center rounded-lg border border-border/45 border-dashed">
               <Plus className="size-5 text-muted-foreground group-hover:text-foreground" />
             </div>
-            <span className="truncate px-0.5 text-left font-medium text-[11px] text-muted-foreground group-hover:text-foreground">
-              New material
+            <span className="truncate px-0.5 text-start font-medium text-[11px] text-muted-foreground group-hover:text-foreground">
+              {t('materials.newMaterial')}
             </span>
           </button>
         ) : null}
