@@ -210,6 +210,8 @@ export const en = {
     leftClick: 'Left click',
     middleClick: 'Middle click',
     rightClick: 'Right click',
+    scrollWheel: 'Scroll wheel',
+    space: 'Space',
   },
   items: {
     search: 'Search…',

@@ -22,6 +22,7 @@ import { memo, type ReactNode, useCallback, useEffect, useRef, useState } from '
 import { ViewerOverlay } from '../../components/viewer-overlay'
 import { ViewerZoneSystem } from '../../components/viewer-zone-system'
 import { type SaveStatus, useAutoSave } from '../../hooks/use-auto-save'
+import { type TranslationKey, useI18n } from '../../i18n'
 import { useKeyboard } from '../../hooks/use-keyboard'
 import { type ActivePaintMaterial, hasActivePaintMaterial } from '../../lib/material-paint'
 import {
@@ -232,6 +233,7 @@ function EditorSceneCrashFallback() {
 // ── Sidebar slot: in-flow, resizable, collapses to a grab strip ──────────────
 
 function SidebarSlot({ children }: { children: ReactNode }) {
+  const { t } = useI18n()
   const width = useSidebarStore((s) => s.width)
   const isCollapsed = useSidebarStore((s) => s.isCollapsed)
   const setIsCollapsed = useSidebarStore((s) => s.setIsCollapsed)
@@ -303,7 +305,7 @@ function SidebarSlot({ children }: { children: ReactNode }) {
           <div
             className="absolute inset-0 z-10 cursor-col-resize transition-colors hover:bg-primary/20"
             onPointerDown={handleGrabDown}
-            title="Expand sidebar"
+            title={t('menus.expandSidebar')}
           />
         ) : (
           children
@@ -366,47 +368,47 @@ type ShortcutKey = {
 }
 
 type CameraControlHint = {
-  action: string
+  actionKey: TranslationKey
   keys: ShortcutKey[]
   alternativeKeys?: ShortcutKey[]
 }
 
 const EDITOR_CAMERA_CONTROL_HINTS: CameraControlHint[] = [
   {
-    action: 'Pan',
+    actionKey: 'menus.pan',
     keys: [{ value: 'Space' }, { value: 'Left click' }],
     alternativeKeys: [{ value: 'Middle click' }],
   },
-  { action: 'Rotate', keys: [{ value: 'Right click' }] },
-  { action: 'Zoom', keys: [{ value: 'Scroll' }] },
+  { actionKey: 'menus.rotate', keys: [{ value: 'Right click' }] },
+  { actionKey: 'menus.zoom', keys: [{ value: 'Scroll' }] },
 ]
 
 const PREVIEW_CAMERA_CONTROL_HINTS: CameraControlHint[] = [
-  { action: 'Pan', keys: [{ value: 'Left click' }] },
-  { action: 'Rotate', keys: [{ value: 'Right click' }] },
-  { action: 'Zoom', keys: [{ value: 'Scroll' }] },
+  { actionKey: 'menus.pan', keys: [{ value: 'Left click' }] },
+  { actionKey: 'menus.rotate', keys: [{ value: 'Right click' }] },
+  { actionKey: 'menus.zoom', keys: [{ value: 'Scroll' }] },
 ]
 
-const CAMERA_SHORTCUT_KEY_META: Record<string, { icon?: string; label: string; text?: string }> = {
+const CAMERA_SHORTCUT_KEY_META: Record<string, { icon?: string; labelKey: TranslationKey; text?: string }> = {
   'Left click': {
     icon: 'ph:mouse-left-click-fill',
-    label: 'Left click',
+    labelKey: 'ui.leftClick',
   },
   'Middle click': {
     icon: 'qlementine-icons:mouse-middle-button-16',
-    label: 'Middle click',
+    labelKey: 'ui.middleClick',
   },
   'Right click': {
     icon: 'ph:mouse-right-click-fill',
-    label: 'Right click',
+    labelKey: 'ui.rightClick',
   },
   Scroll: {
     icon: 'qlementine-icons:mouse-middle-button-16',
-    label: 'Scroll wheel',
+    labelKey: 'ui.scrollWheel',
   },
   Space: {
     icon: 'lucide:space',
-    label: 'Space',
+    labelKey: 'ui.space',
   },
 }
 
@@ -438,18 +440,19 @@ function writeCameraControlsHintDismissed(dismissed: boolean) {
 }
 
 function InlineShortcutKey({ shortcutKey }: { shortcutKey: ShortcutKey }) {
+  const { t } = useI18n()
   const meta = CAMERA_SHORTCUT_KEY_META[shortcutKey.value]
 
   if (meta?.icon) {
     return (
       <span
-        aria-label={meta.label}
+        aria-label={t(meta.labelKey)}
         className="inline-flex items-center text-foreground/90"
         role="img"
-        title={meta.label}
+        title={t(meta.labelKey)}
       >
         <Icon aria-hidden="true" color="currentColor" height={16} icon={meta.icon} width={16} />
-        <span className="sr-only">{meta.label}</span>
+        <span className="sr-only">{t(meta.labelKey)}</span>
       </span>
     )
   }
@@ -475,10 +478,11 @@ function ShortcutSequence({ keys }: { keys: ShortcutKey[] }) {
 }
 
 function CameraControlHintItem({ hint }: { hint: CameraControlHint }) {
+  const { t } = useI18n()
   return (
     <div className="flex min-w-0 flex-col items-center gap-1.5 px-4 text-center first:pl-0 last:pr-0">
       <span className="font-medium text-[10px] text-muted-foreground/60 tracking-[0.03em]">
-        {hint.action}
+        {t(hint.actionKey)}
       </span>
       <div className="flex flex-wrap items-center justify-center gap-1.5">
         <ShortcutSequence keys={hint.keys} />
@@ -510,7 +514,7 @@ function ViewerCanvasControlsHint({
       >
         <div className="grid min-w-0 flex-1 grid-cols-3 items-start divide-x divide-border/18">
           {hints.map((hint) => (
-            <CameraControlHintItem hint={hint} key={hint.action} />
+            <CameraControlHintItem hint={hint} key={hint.actionKey} />
           ))}
         </div>
         <Tooltip>

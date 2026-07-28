@@ -50,6 +50,7 @@ import {
 import { createLocalGuideImage } from './../../../../../lib/local-guide-image'
 import { cn } from './../../../../../lib/utils'
 import useEditor from './../../../../../store/use-editor'
+import { useI18n } from '../../../../../i18n'
 import { useUploadStore } from '../../../../../store/use-upload'
 import { LevelDuplicateDialog } from '../../../level-duplicate-dialog'
 import { InlineRenameInput } from './inline-rename-input'
@@ -269,6 +270,7 @@ const CameraPopover = memo(function CameraPopover({
   onOpenChange: (open: boolean) => void
   buttonClassName?: string
 }) {
+  const { t } = useI18n()
   const updateNode = useScene((state) => state.updateNode)
   return (
     <Popover onOpenChange={onOpenChange} open={open}>
@@ -279,7 +281,7 @@ const CameraPopover = memo(function CameraPopover({
             buttonClassName,
           )}
           onClick={(e) => e.stopPropagation()}
-          title="Camera snapshot"
+          title={t('sitePanel.cameraSnapshot')}
         >
           <Camera className="h-3.5 w-3.5" />
           {hasCamera && (
@@ -316,7 +318,7 @@ const CameraPopover = memo(function CameraPopover({
             }}
           >
             <Camera className="h-3.5 w-3.5" />
-            {hasCamera ? 'Update snapshot' : 'Take snapshot'}
+            {hasCamera ? t('sitePanel.updateSnapshot') : t('sitePanel.takeSnapshot')}
           </button>
           {hasCamera && (
             <button
@@ -348,6 +350,7 @@ const ReferenceItem = memo(function ReferenceItem({
   setSelectedReferenceId: (id: string) => void
   handleDelete: (id: string, e: React.MouseEvent) => void
 }) {
+  const { t } = useI18n()
   const [isEditing, setIsEditing] = useState(false)
   const handleSelect = () => {
     setSelectedReferenceId(refNode.id)
@@ -378,13 +381,13 @@ const ReferenceItem = memo(function ReferenceItem({
       <div className="flex h-8 min-w-0 flex-1 cursor-pointer items-center gap-2 py-0 pl-[60px] text-muted-foreground group-hover/ref:text-foreground">
         {refNode.type === 'scan' ? (
           <img
-            alt="Scan"
+            alt={t('sitePanel.scan')}
             className="h-3.5 w-3.5 shrink-0 object-contain opacity-70 transition-opacity group-hover/ref:opacity-100"
             src="/icons/mesh.webp"
           />
         ) : (
           <img
-            alt="Guide"
+            alt={t('sitePanel.guide')}
             className="h-3.5 w-3.5 shrink-0 object-contain opacity-70 transition-opacity group-hover/ref:opacity-100"
             src="/icons/floorplan.webp"
           />
@@ -401,7 +404,7 @@ const ReferenceItem = memo(function ReferenceItem({
       <button
         className="z-20 flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted-foreground opacity-0 transition-colors hover:bg-black/5 hover:text-foreground group-hover/ref:opacity-100 dark:hover:bg-white/10"
         onClick={(e) => handleDelete(refNode.id, e)}
-        title="Delete"
+        title={t('common.delete')}
       >
         <Trash2 className="h-3 w-3" />
       </button>
@@ -426,6 +429,7 @@ const LevelReferences = memo(function LevelReferences({
   onUploadAsset,
   onDeleteAsset,
 }: LevelReferencesProps) {
+  const { t } = useI18n()
   const createNode = useScene((s) => s.createNode)
   const deleteNode = useScene((s) => s.deleteNode)
   const setSelection = useViewer((s) => s.setSelection)
@@ -494,14 +498,14 @@ const LevelReferences = memo(function LevelReferences({
         useUploadStore.getState().setResult(levelId, guide.url)
         window.setTimeout(() => useUploadStore.getState().clearUpload(levelId), 600)
       } catch {
-        useUploadStore.getState().setError(levelId, 'Could not add that guide image.')
+        useUploadStore.getState().setError(levelId, t('sitePanel.couldNotAddGuide'))
       }
       return
     }
 
     if (!projectId) {
       useUploadStore.getState().startUpload(levelId, 'scan', file.name)
-      useUploadStore.getState().setError(levelId, 'No active project. Please open a project first.')
+      useUploadStore.getState().setError(levelId, t('sitePanel.noActiveProject'))
       return
     }
 
@@ -628,6 +632,7 @@ const LevelItem = memo(function LevelItem({
   onUploadAsset?: (projectId: string, levelId: string, file: File, type: 'scan' | 'guide') => void
   onDeleteAsset?: (projectId: string, url: string) => void
 }) {
+  const { t } = useI18n()
   const [cameraPopoverOpen, setCameraPopoverOpen] = useState(false)
   const [duplicateDialogOpen, setDuplicateDialogOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
@@ -740,7 +745,7 @@ const LevelItem = memo(function LevelItem({
 
         <div className="flex h-8 min-w-0 flex-1 cursor-pointer items-center gap-2 py-0 pl-0.5 text-sm">
           <img
-            alt="Level"
+            alt={t('sitePanel.level')}
             className={cn(
               'h-4 w-4 shrink-0 object-contain transition-all duration-200',
               !isSelected && 'opacity-60 grayscale',
@@ -766,7 +771,7 @@ const LevelItem = memo(function LevelItem({
                   : 'text-muted-foreground hover:bg-accent hover:text-foreground',
               )}
               onClick={(e) => e.stopPropagation()}
-              title="Camera snapshot"
+              title={t('sitePanel.cameraSnapshot')}
             >
               <Camera className="h-3.5 w-3.5" />
               {level.camera && (
@@ -803,7 +808,7 @@ const LevelItem = memo(function LevelItem({
                 }}
               >
                 <Camera className="h-3.5 w-3.5" />
-                {level.camera ? 'Update snapshot' : 'Take snapshot'}
+                {level.camera ? t('sitePanel.updateSnapshot') : t('sitePanel.takeSnapshot')}
               </button>
               {level.camera && (
                 <button
@@ -1112,6 +1117,7 @@ const LayerToggle = memo(function LayerToggle() {
 })
 
 const ZoneItem = memo(function ZoneItem({ zone, isLast }: { zone: ZoneNode; isLast?: boolean }) {
+  const { t } = useI18n()
   const [isEditing, setIsEditing] = useState(false)
   const [cameraPopoverOpen, setCameraPopoverOpen] = useState(false)
   const deleteNode = useScene((state) => state.deleteNode)
@@ -1208,7 +1214,7 @@ const ZoneItem = memo(function ZoneItem({ zone, isLast }: { zone: ZoneNode; isLa
             <button
               className="relative flex h-6 w-6 cursor-pointer items-center justify-center rounded-md text-muted-foreground opacity-0 transition-colors hover:bg-black/5 hover:text-foreground group-hover/row:opacity-100 dark:hover:bg-white/10"
               onClick={(e) => e.stopPropagation()}
-              title="Camera snapshot"
+              title={t('sitePanel.cameraSnapshot')}
             >
               <Camera className="h-3 w-3" />
               {zone.camera && (
@@ -1245,7 +1251,7 @@ const ZoneItem = memo(function ZoneItem({ zone, isLast }: { zone: ZoneNode; isLa
                 }}
               >
                 <Camera className="h-3.5 w-3.5" />
-                {zone.camera ? 'Update snapshot' : 'Take snapshot'}
+                {zone.camera ? t('sitePanel.updateSnapshot') : t('sitePanel.takeSnapshot')}
               </button>
               {zone.camera && (
                 <button
@@ -1393,6 +1399,7 @@ const BuildingItem = memo(function BuildingItem({
   onUploadAsset?: (projectId: string, levelId: string, file: File, type: 'scan' | 'guide') => void
   onDeleteAsset?: (projectId: string, url: string) => void
 }) {
+  const { t } = useI18n()
   const setSelection = useViewer((state) => state.setSelection)
   const phase = useEditor((state) => state.phase)
   const setPhase = useEditor((state) => state.setPhase)
@@ -1455,7 +1462,7 @@ const BuildingItem = memo(function BuildingItem({
                   : 'text-muted-foreground hover:bg-accent hover:text-foreground',
               )}
               onClick={(e) => e.stopPropagation()}
-              title="Camera snapshot"
+              title={t('sitePanel.cameraSnapshot')}
             >
               <Camera className="h-4 w-4" />
               {building.camera && (
@@ -1492,7 +1499,7 @@ const BuildingItem = memo(function BuildingItem({
                 }}
               >
                 <Camera className="h-3.5 w-3.5" />
-                {building.camera ? 'Update snapshot' : 'Take snapshot'}
+                {building.camera ? t('sitePanel.updateSnapshot') : t('sitePanel.takeSnapshot')}
               </button>
               {building.camera && (
                 <button

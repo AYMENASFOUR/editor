@@ -207,6 +207,8 @@ export const ar: Messages = {
     leftClick: 'النقر الأيسر',
     middleClick: 'النقر الأوسط',
     rightClick: 'النقر الأيمن',
+    scrollWheel: 'عجلة التمرير',
+    space: 'المسافة',
   },
   items: {
     search: 'بحث…',
