@@ -6,7 +6,9 @@ import { useEffect } from 'react'
 import { triggerSFX } from './../../../lib/sfx-bus'
 import { cn } from './../../../lib/utils'
 import useEditor, { type CatalogCategory } from './../../../store/use-editor'
+import { useI18n } from '../../../i18n'
 import { resolveAssetSnapTarget, SnapTargetBadge } from '../snap-target-badge'
+import { localizeCatalogName } from './catalog-item-names'
 import { CATALOG_ITEMS, type CatalogItem } from './catalog-items'
 
 export function ItemCatalog({
@@ -31,6 +33,7 @@ export function ItemCatalog({
   /** Rendered when there are no items to show. Replaces the empty grid. */
   emptyState?: React.ReactNode
 }) {
+  const { locale } = useI18n()
   const selectedItem = useEditor((state) => state.selectedItem)
   const setSelectedItem = useEditor((state) => state.setSelectedItem)
   const setMode = useEditor((state) => state.setMode)
@@ -48,7 +51,13 @@ export function ItemCatalog({
         const tags = item.tags ?? []
         if (activePlacementTag && !tags.includes(activePlacementTag)) return false
         if (activeFunctionalTag && !tags.includes(activeFunctionalTag)) return false
-        if (search && !item.name.toLowerCase().includes(search.toLowerCase())) return false
+        if (search) {
+          const q = search.toLowerCase()
+          const matches =
+            item.name.toLowerCase().includes(q) ||
+            localizeCatalogName(item.name, locale).toLowerCase().includes(q)
+          if (!matches) return false
+        }
         return true
       })
     })()
@@ -88,7 +97,7 @@ export function ItemCatalog({
           >
             <div className="relative aspect-square w-full overflow-hidden rounded-lg">
               <img
-                alt={item.name}
+                alt={localizeCatalogName(item.name, locale)}
                 className="h-full w-full object-cover"
                 loading="eager"
                 src={resolveCdnUrl(item.thumbnail) || ''}
@@ -97,8 +106,8 @@ export function ItemCatalog({
                 <SnapTargetBadge className="absolute right-1 bottom-1" target={snapTarget} />
               )}
             </div>
-            <span className="truncate px-0.5 text-left font-medium text-[11px] text-muted-foreground group-hover:text-foreground">
-              {item.name}
+            <span className="truncate px-0.5 text-start font-medium text-[11px] text-muted-foreground group-hover:text-foreground">
+              {localizeCatalogName(item.name, locale)}
             </span>
           </button>
         )
