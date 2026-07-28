@@ -1,0 +1,315 @@
+// English message catalog — the single source of truth for the editor UI's
+// translatable text. Every other locale (see `./ar`) is typed as `Messages`,
+// which is derived from this object, so any missing or misspelled key surfaces
+// as a compile error rather than a silent English fallback at runtime.
+//
+// Keys are grouped by domain (common, settings, toolbar, …). Add a key here
+// first, then mirror it in every other catalog. Interpolation uses `{name}`
+// placeholders resolved by `t(key, { name })`.
+export const en = {
+  common: {
+    cancel: 'Cancel',
+    confirm: 'Confirm',
+    save: 'Save',
+    delete: 'Delete',
+    close: 'Close',
+    done: 'Done',
+    back: 'Back',
+    next: 'Next',
+    loading: 'Loading…',
+    search: 'Search',
+    settings: 'Settings',
+  },
+  dialogs: {
+    delete: {
+      title: 'Delete {count} elements?',
+      description:
+        'This removes every selected element. You can undo the deletion while it remains in the editor history.',
+    },
+  },
+  nav: {
+    scene: 'Scene',
+    build: 'Build',
+    items: 'Items',
+    settings: 'Settings',
+  },
+  landing: {
+    localEditorNotice: 'Local editor — scenes are not saved.',
+    openRecentScenes: 'Open recent scenes',
+    createNew: 'Create new',
+  },
+  build: {
+    types: {
+      wall: 'Wall',
+      fence: 'Fence',
+      slab: 'Slab',
+      ceiling: 'Ceiling',
+      roof: 'Roof',
+      stair: 'Stairs',
+      elevator: 'Elevator',
+      door: 'Door',
+      window: 'Window',
+      column: 'Column',
+      shelf: 'Shelf',
+      spawn: 'Spawn Point',
+      mep: 'MEP',
+      painting: 'Painting',
+    },
+    mep: {
+      duct: 'Duct',
+      register: 'Register',
+      hvacUnit: 'HVAC Unit',
+      lineset: 'Lineset',
+      liquidLine: 'Liquid Line',
+      dwvPipe: 'DWV Pipe',
+    },
+    features: 'Features',
+    mepGroup: 'MEP',
+    addFitting: 'Add Fitting',
+    addTrap: 'Add Trap',
+    followLineset: 'Follow lineset',
+    on: 'On',
+    off: 'Off',
+    followHintOn: 'Click a lineset to lay the line beside it.',
+    followHintOff: 'Trace a line alongside an existing lineset (F).',
+  },
+  shortcuts: {
+    trigger: 'Keyboard Shortcuts',
+    title: 'Keyboard Shortcuts',
+    description:
+      'Shortcuts are context-aware. Guided constraints are enabled by default; hold Shift during an active gesture to build freely.',
+    categories: {
+      editorNav: 'Editor Navigation',
+      modesHistory: 'Modes & History',
+      selection: 'Selection',
+      directManip: 'Direct Manipulation',
+      drawingTools: 'Drawing Tools',
+      itemPlacement: 'Item Placement',
+      camera: 'Camera',
+    },
+    items: {
+      sitePhase: { action: 'Switch to Site phase' },
+      structurePhase: { action: 'Switch to Structure phase' },
+      furnishPhase: { action: 'Switch to Furnish phase' },
+      furnishLayer: { action: 'Switch to Furnish layer' },
+      zonesLayer: { action: 'Switch to Zones layer' },
+      nextLevel: { action: 'Select next level in the active building' },
+      prevLevel: { action: 'Select previous level in the active building' },
+      toggleSidebar: { action: 'Toggle sidebar' },
+      selectMode: { action: 'Switch to Select mode' },
+      buildMode: { action: 'Switch to Build mode' },
+      lastMeasure: { action: 'Activate the last measurement tool' },
+      deleteMode: { action: 'Switch to Delete mode' },
+      cancelTool: { action: 'Cancel the active tool and return to Select mode' },
+      deleteObjects: { action: 'Delete selected objects' },
+      undo: { action: 'Undo' },
+      redo: { action: 'Redo' },
+      copy: {
+        action: 'Copy the selected objects',
+        note: 'The copied selection can be pasted into another level, project, or browser tab.',
+      },
+      cut: {
+        action: 'Cut the selected objects',
+        note: 'Copies the selection to the clipboard, then removes it from this scene.',
+      },
+      paste: {
+        action: 'Paste and place copied objects',
+        note: 'Carries a preview under the cursor. Click to place it, or press Escape to cancel.',
+      },
+      addRemoveMulti: {
+        action: 'Add or remove an object from multi-selection',
+        note: 'Works in Select mode on the 3D canvas, the 2D floor plan, and the scene graph.',
+      },
+      addRemoveCanvasMulti: {
+        action: 'Add or remove an object from canvas multi-selection',
+        note: 'In the scene graph, Shift-click selects the visible range like a file browser.',
+      },
+      moveMulti: {
+        action: 'Move the whole multi-selection',
+        note: 'With 2+ objects selected, in 2D and 3D alike: drag the selection (or its dashed box) to slide it; click it to pick it up and place with the next click.',
+      },
+      rotateMulti: {
+        action: 'Rotate a multi-selection ±45° around its center',
+        note: 'Also works mid-move while carrying the selection.',
+      },
+      clearSelection: {
+        action: 'Clear the selection',
+        note: 'Clicking empty space does the same.',
+      },
+      moveUnderCursor: {
+        action: 'Move the selected movable object under the cursor',
+        note: 'Drag in Select mode with a single object selected. Guided snapping and guides are enabled by default.',
+      },
+      rotateUnderCursor: {
+        action: 'Rotate the selected object under the cursor',
+        note: 'Drag left or right in Select mode with a single object selected. Rotation snaps to 15° increments by default.',
+      },
+      rotateFreely: {
+        action: 'Rotate freely',
+        note: 'Hold Shift during the drag to bypass the 15° rotation increment.',
+      },
+      bypassSnapping: {
+        action: 'Bypass guided snapping and angle constraints',
+        note: 'Hold during the active gesture. Passive guide or measurement feedback may stay visible.',
+      },
+      rotateFreelySnap: {
+        action: 'Rotate freely, bypassing the default 15° rotation snap',
+        note: 'Hold while dragging a rotate handle or direct-rotation gesture.',
+      },
+      rotateItem: {
+        action: 'Rotate item; with a door selected, R toggles open/closed and T closes',
+      },
+      operateNode: {
+        action:
+          'Operate the selected node — doors, windows, and cabinet doors/drawers animate open/closed',
+      },
+      bypassPlacement: {
+        action: 'Temporarily bypass placement validation constraints',
+        note: 'Hold while placing.',
+      },
+      panWasd: {
+        action: 'Pan camera',
+        note: 'Moves in screen space, similar to dragging the camera view.',
+      },
+      panMiddle: {
+        action: 'Pan camera',
+        note: 'Drag with the middle mouse button, or hold Space while dragging with the left mouse button.',
+      },
+      orbit: {
+        action: 'Orbit camera',
+        note: 'Drag with the right mouse button.',
+      },
+    },
+  },
+  toolbar: {
+    viewMode: { '3d': '3D', '2d': '2D', split: 'Split' },
+    collapseSidebar: 'Collapse sidebar',
+    expandSidebar: 'Expand sidebar',
+    selectDrawing: 'Select coordinated drawing',
+    drawingType: 'Drawing type: {label}',
+    levels: {
+      label: 'Levels: {mode}',
+      stack: 'Stack',
+      exploded: 'Exploded',
+      solo: 'Solo',
+      manual: 'Manual',
+    },
+    walls: {
+      label: 'Walls: {mode}',
+      fullHeight: 'Full height',
+      cutaway: 'Cutaway',
+      low: 'Low',
+      translucent: 'Translucent',
+    },
+    display: {
+      trigger: 'Display',
+      settings: 'Display settings',
+      grid: 'Grid',
+      measurements: 'Measurements',
+      measurements3d: '3D measurements',
+      floorplanAnnotations: 'Floor plan annotations',
+      wallDimensions: 'Wall dimensions',
+      magneticSnap: 'Magnetic snap',
+      shadows: 'Shadows',
+      camera: 'Camera',
+      perspective: 'Perspective',
+      orthographic: 'Orthographic',
+      units: 'Units',
+      meters: 'Meters',
+      millimeters: 'Millimeters',
+      feetInches: 'Feet & inches',
+      render: 'Render',
+      edges: 'Edges',
+      theme: 'Theme',
+      on: 'On',
+      off: 'Off',
+    },
+    annotations: {
+      automaticDimensions: 'Automatic dimensions',
+      manualDimensions: 'Manual dimensions',
+      measurements: 'Measurements',
+      openingMarks: 'Door/window marks',
+      structuralGrids: 'Structural grids & column centers',
+      roomLabels: 'Room labels',
+      stairAnnotations: 'Stair annotations',
+    },
+    wallDimensionRef: {
+      finishedFacesName: 'Finished faces',
+      finishedFacesDetail: 'Full wall thickness',
+      centerlineName: 'Wall centerline',
+      centerlineDetail: 'Single wall axis',
+      studFacesName: 'Face of stud',
+      studFacesDetail: 'Structural core face',
+    },
+    shading: {
+      solidName: 'Solid',
+      solidDetail: 'Flat and fast — no ambient occlusion',
+      renderedName: 'Rendered',
+      renderedDetail: 'Full ambient occlusion',
+    },
+    edgeOptions: {
+      offName: 'Off',
+      offDetail: 'No edge lines',
+      softName: 'Soft',
+      softDetail: 'Faint outline of major creases',
+      strongName: 'Strong',
+      strongDetail: 'Crisp, opaque edge lines',
+    },
+    walkthrough: 'Walkthrough',
+    previewMode: 'Preview mode',
+    preview: 'Preview',
+  },
+  settings: {
+    title: 'Settings',
+    language: {
+      label: 'Language',
+      description: 'Choose the interface language.',
+      english: 'English',
+      arabic: 'العربية',
+    },
+    visibility: {
+      title: 'Visibility',
+      public: 'Public',
+      onlyYou: 'Only you',
+      anyone: 'Anyone',
+      canView: '{who} can view',
+      show3dScans: 'Show 3D Scans',
+      showFloorplans: 'Show Floorplans',
+      visibleToPublic: 'Visible to public viewers',
+      shadows: 'Shadows',
+      shadowsDesc: 'Cast shadows from lights',
+    },
+    export: {
+      title: 'Export',
+      model3d: '3D model',
+      glb: 'Export GLB',
+      stl: 'Export STL',
+      obj: 'Export OBJ',
+      floorPlan: 'Floor plan',
+      fullFloorPlan: 'Full floor plan',
+      structureOnly: 'Structure only',
+    },
+    thumbnail: {
+      title: 'Thumbnail',
+      generate: 'Generate Thumbnail',
+      generating: 'Generating…',
+    },
+    saveLoad: {
+      title: 'Save & Load',
+      saveBuild: 'Save Build',
+      loadBuild: 'Load Build',
+    },
+    audio: { title: 'Audio' },
+    keyboard: { title: 'Keyboard' },
+    sceneGraph: { title: 'Scene Graph', explore: 'Explore scene graph' },
+    danger: { title: 'Danger Zone', clearStartNew: 'Clear & Start New' },
+    invalidJson: 'File could not be parsed as JSON.',
+  },
+}
+
+// The catalog shape. Other locales are typed as `Messages` so they must have
+// the identical key structure (missing/extra keys are compile errors). Note we
+// intentionally do NOT use `as const` here: literal value types would make a
+// differently-worded translation (e.g. Arabic) fail to assign. The keys are
+// preserved either way, so `TranslationKey` still enumerates every path.
+export type Messages = typeof en

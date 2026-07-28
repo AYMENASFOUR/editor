@@ -168,8 +168,12 @@ function RightColumn({
   stageOverlay?: ReactNode
 }) {
   return (
+    // The 3D stage and its in-scene overlays (handles, HUD, measurement pills)
+    // are spatial, not textual, so they stay LTR even when the surrounding
+    // chrome flips to RTL. Only the reading direction of panels/menus flips.
     <div
       className="relative flex min-w-0 flex-1 flex-col overflow-hidden"
+      dir="ltr"
       style={{
         borderTopLeftRadius: 16,
         clipPath: 'inset(0 0 0 0 round 16px 0 0 0)',

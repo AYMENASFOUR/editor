@@ -18,6 +18,25 @@ export {
   useScene,
 } from '@pascal-app/core'
 export { useViewer } from '@pascal-app/viewer'
+// Internationalisation: provider + typed `t()` for the editor UI. English is
+// the source of truth; Arabic ships built in with full RTL support.
+export {
+  ar,
+  DEFAULT_LOCALE,
+  type Direction,
+  en,
+  I18nProvider,
+  isLocale,
+  type Locale,
+  LOCALE_COOKIE,
+  LOCALE_DIRECTION,
+  LOCALE_STORAGE_KEY,
+  type Messages,
+  type TranslateFn,
+  type TranslationKey,
+  useI18n,
+  useTranslate,
+} from './i18n'
 export type { EditorProps } from './components/editor'
 export { default as Editor } from './components/editor'
 // Headless component aliases: the implementation files keep their

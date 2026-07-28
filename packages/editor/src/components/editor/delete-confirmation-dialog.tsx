@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { useI18n } from '../../i18n'
 import useDeleteConfirmation from '../../store/use-delete-confirmation'
 import {
   Dialog,
@@ -12,6 +13,7 @@ import {
 } from '../ui/primitives/dialog'
 
 export function DeleteConfirmationDialog() {
+  const { t } = useI18n()
   const request = useDeleteConfirmation((state) => state.request)
   const cancel = useDeleteConfirmation((state) => state.cancel)
   const confirm = useDeleteConfirmation((state) => state.confirm)
@@ -26,11 +28,8 @@ export function DeleteConfirmationDialog() {
         showCloseButton={false}
       >
         <DialogHeader>
-          <DialogTitle>Delete {request?.count ?? 0} elements?</DialogTitle>
-          <DialogDescription>
-            This removes every selected element. You can undo the deletion while it remains in the
-            editor history.
-          </DialogDescription>
+          <DialogTitle>{t('dialogs.delete.title', { count: request?.count ?? 0 })}</DialogTitle>
+          <DialogDescription>{t('dialogs.delete.description')}</DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <button
@@ -38,14 +37,14 @@ export function DeleteConfirmationDialog() {
             onClick={cancel}
             type="button"
           >
-            Cancel
+            {t('common.cancel')}
           </button>
           <button
             className="rounded-full bg-red-600 px-4 py-2 text-sm text-white transition-colors hover:bg-red-700"
             onClick={confirm}
             type="button"
           >
-            Delete
+            {t('common.delete')}
           </button>
         </DialogFooter>
       </DialogContent>

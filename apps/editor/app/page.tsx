@@ -1,6 +1,6 @@
 'use client'
 
-import { Editor, ItemsPanel } from '@pascal-app/editor'
+import { Editor, ItemsPanel, type TranslationKey, useI18n } from '@pascal-app/editor'
 import { Hammer, Layers, Package, Settings } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -87,22 +87,36 @@ const SIDEBAR_TABS = [
 
 const PROJECT_ID = 'local-editor'
 
+// Maps each sidebar tab id to its `nav.*` translation key.
+const TAB_LABEL_KEYS: Record<string, TranslationKey> = {
+  site: 'nav.scene',
+  build: 'nav.build',
+  items: 'nav.items',
+  settings: 'nav.settings',
+}
+
 export default function Home() {
+  const { t } = useI18n()
+  const sidebarTabs = SIDEBAR_TABS.map((tab) => {
+    const labelKey = TAB_LABEL_KEYS[tab.id]
+    return { ...tab, label: labelKey ? t(labelKey) : tab.label }
+  })
+
   return (
     <div className="relative h-screen w-screen">
       <FloorplanConstructionPreflight />
       {PROJECT_ID === 'local-editor' && (
         <div className="pointer-events-none absolute top-3 left-1/2 z-40 -translate-x-1/2">
           <div className="pointer-events-auto flex items-center gap-3 rounded-full border border-border/60 bg-background/90 px-4 py-1.5 text-xs shadow-sm backdrop-blur">
-            <span className="text-muted-foreground">Local editor — scenes are not saved.</span>
+            <span className="text-muted-foreground">{t('landing.localEditorNotice')}</span>
             <Link className="font-medium text-foreground hover:underline" href="/scenes">
-              Open recent scenes
+              {t('landing.openRecentScenes')}
             </Link>
             <span aria-hidden className="text-muted-foreground">
               ·
             </span>
             <Link className="font-medium text-foreground hover:underline" href="/scenes">
-              Create new
+              {t('landing.createNew')}
             </Link>
           </div>
         </div>
@@ -110,7 +124,7 @@ export default function Home() {
       <Editor
         layoutVersion="v2"
         projectId={PROJECT_ID}
-        sidebarTabs={SIDEBAR_TABS}
+        sidebarTabs={sidebarTabs}
         viewerToolbarLeft={<CommunityViewerToolbarLeft />}
         viewerToolbarRight={<CommunityViewerToolbarRight />}
       />

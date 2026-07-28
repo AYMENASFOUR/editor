@@ -220,9 +220,10 @@ export function EditorLayoutMobile({
         ref={middleRef}
         style={{ backgroundColor: viewerBg }}
       >
-        {/* Viewer column: sized by committed sheet height */}
+        {/* Viewer column: sized by committed sheet height. Forced LTR — the 3D
+            stage and its overlays are spatial, so they don't flip in RTL. */}
         <div className="absolute inset-x-0 top-0 overflow-hidden" style={{ height: viewerHeight }}>
-          <div className="relative h-full w-full">
+          <div className="relative h-full w-full" dir="ltr">
             {(viewerToolbarLeft || viewerToolbarRight) && !isCaptureMode && (
               <div className="pointer-events-none absolute top-3 right-3 left-3 z-20 flex items-center justify-between gap-2">
                 <div className="pointer-events-auto flex items-center gap-2">
