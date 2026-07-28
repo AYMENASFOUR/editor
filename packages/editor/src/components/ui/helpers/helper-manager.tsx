@@ -10,6 +10,7 @@ import { useViewer } from '@pascal-app/viewer'
 import { useEffect, useMemo, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { useIsMobile } from '../../../hooks/use-mobile'
+import { type TranslateFn, useI18n } from '../../../i18n'
 import {
   type ContextualShortcutHint,
   GROUP_MOVE_DRAG_LABEL,
@@ -36,20 +37,20 @@ import { RoofHelper } from './roof-helper'
 
 // Reshaping a selected node's geometry (endpoint / curve / polygon corner). The
 // snapping chip is the main control; these just name the gesture + Esc.
-function reshapingHints(reshape: ReshapeKind): ContextualShortcutHint[] {
+function reshapingHints(reshape: ReshapeKind, t: TranslateFn): ContextualShortcutHint[] {
   const action =
     reshape === 'curve'
-      ? 'Curve'
+      ? t('helper.curve')
       : reshape === 'control-point'
-        ? 'Move control point'
+        ? t('helper.moveControlPoint')
         : reshape === 'tangent'
-          ? 'Move tangent'
+          ? t('helper.moveTangent')
       : reshape === 'endpoint'
-        ? 'Move endpoint'
-        : 'Move corner'
+        ? t('helper.moveEndpoint')
+        : t('helper.moveCorner')
   return [
     { keys: ['Drag'], label: action },
-    { keys: ['Esc'], label: 'Cancel' },
+    { keys: ['Esc'], label: t('helper.cancel') },
   ]
 }
 
@@ -93,6 +94,7 @@ function useActiveModifierKeys(): ActiveModifierKeys {
 }
 
 export function HelperManager() {
+  const { t } = useI18n()
   const mode = useEditor((s) => s.mode)
   const tool = useEditor((s) => s.tool)
   const isFirstPersonMode = useEditor((s) => s.isFirstPersonMode)
@@ -184,7 +186,9 @@ export function HelperManager() {
   // before the select branch so the idle "drag selected / add objects" hints
   // never leak over an in-progress reshape — and it gets its own snapping chip.
   if (scope.kind === 'reshaping') {
-    return <ContextualHelperPanel hints={reshapingHints(scope.reshape)} snapContext={snapContext} />
+    return (
+      <ContextualHelperPanel hints={reshapingHints(scope.reshape, t)} snapContext={snapContext} />
+    )
   }
 
   if (movingNode) {

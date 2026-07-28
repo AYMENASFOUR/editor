@@ -1,3 +1,4 @@
+import { useI18n } from '../../../i18n'
 import type { ContinuationContext } from '../../../lib/continuation'
 import type { SnapContext } from '../../../lib/snapping-mode'
 import { ContextualHelperPanel } from './contextual-helper-panel'
@@ -21,14 +22,15 @@ export function ItemHelper({
   showForce,
   continuationContext = null,
 }: ItemHelperProps) {
+  const { t } = useI18n()
   return (
     <ContextualHelperPanel
       continuationContext={continuationContext}
       hints={[
-        { keys: ['Left click'], label: 'Place' },
-        { keys: ['R', 'T'], label: 'Rotate' },
-        ...(showForce ? [{ keys: ['Alt'], label: 'Force place' }] : []),
-        { keys: [showEsc ? 'Esc' : 'Right click'], label: 'Cancel' },
+        { keys: ['Left click'], label: t('helper.place') },
+        { keys: ['R', 'T'], label: t('menus.rotate') },
+        ...(showForce ? [{ keys: ['Alt'], label: t('helper.forcePlace') }] : []),
+        { keys: [showEsc ? 'Esc' : 'Right click'], label: t('helper.cancel') },
       ]}
       snapContext={snapContext}
     />
