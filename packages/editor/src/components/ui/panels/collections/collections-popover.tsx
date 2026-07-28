@@ -1,5 +1,6 @@
 'use client'
 
+import { useI18n } from '../../../../i18n'
 import type { AnyNodeId, Collection, CollectionId } from '@pascal-app/core'
 import { useScene } from '@pascal-app/core'
 import {
@@ -35,6 +36,7 @@ interface CollectionsPopoverProps {
 }
 
 export function CollectionsPopover({ nodeId, collectionIds, children }: CollectionsPopoverProps) {
+  const { t } = useI18n()
   const collections = useScene((s) => s.collections)
   const nodes = useScene((s) => s.nodes)
   const createCollection = useScene((s) => s.createCollection)
@@ -131,7 +133,7 @@ export function CollectionsPopover({ nodeId, collectionIds, children }: Collecti
                   setCreateName('')
                 }
               }}
-              placeholder="Collection name…"
+              placeholder={t('common.collectionName')}
               value={createName}
             />
             <button

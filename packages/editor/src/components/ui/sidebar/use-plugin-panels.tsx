@@ -1,5 +1,6 @@
 'use client'
 
+import { useI18n } from '../../../i18n'
 import { Icon } from '@iconify/react'
 import { type IconRef, useScene } from '@pascal-app/core'
 import { Plus } from 'lucide-react'
@@ -17,9 +18,8 @@ import { ErrorBoundary } from '../primitives/error-boundary'
 import type { ExtraPanel } from './icon-rail'
 import { PluginsPanel } from './panels/plugins-panel'
 
-const pluginsManagerPanel: ExtraPanel = {
+const pluginsManagerPanel: Omit<ExtraPanel, 'label'> = {
   id: 'plugins',
-  label: 'Plugins',
   icon: <Plus className="h-5 w-5" />,
   component: PluginsPanel,
 }
@@ -49,13 +49,11 @@ function renderIconRef(ref: IconRef): ReactNode {
 }
 
 function PluginPanelCrashed({ label }: { label: string }) {
+  const { t } = useI18n()
   return (
     <div className="flex flex-col gap-2 p-4 text-sm">
-      <p className="font-medium text-sidebar-foreground">"{label}" plugin crashed</p>
-      <p className="text-sidebar-foreground/50 text-xs">
-        This panel hit an error and was unloaded for this session. The rest of the editor is
-        unaffected — reload to try again.
-      </p>
+      <p className="font-medium text-sidebar-foreground">{t('plugins.crashed', { name: label })}</p>
+      <p className="text-sidebar-foreground/50 text-xs">{t('plugins.crashedBody')}</p>
     </div>
   )
 }
@@ -93,6 +91,7 @@ function resolvePanelComponent(panel: EditorHostPanel): ComponentType {
  * authoring panel like Nature doesn't ride into the studio rail.
  */
 export function useHostPanels(hostPanels?: ExtraPanel[]): ExtraPanel[] {
+  const { t } = useI18n()
   const registered = useSyncExternalStore(
     editorHostPanelRegistry.subscribe,
     editorHostPanelRegistry.getSnapshot,
@@ -127,6 +126,8 @@ export function useHostPanels(hostPanels?: ExtraPanel[]): ExtraPanel[] {
       }),
     )
   const manager =
-    workspaceMode === 'edit' && !hostIds.has(pluginsManagerPanel.id) ? [pluginsManagerPanel] : []
+    workspaceMode === 'edit' && !hostIds.has(pluginsManagerPanel.id)
+      ? [{ ...pluginsManagerPanel, label: t('common.plugins') }]
+      : []
   return [...(hostPanels ?? []), ...fromRegistry, ...manager]
 }

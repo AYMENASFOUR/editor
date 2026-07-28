@@ -8,6 +8,12 @@
 // placeholders resolved by `t(key, { name })`.
 export const en = {
   common: {
+    close: 'Close',
+    sidebar: 'Sidebar',
+    toggleSidebar: 'Toggle Sidebar',
+    plugins: 'Plugins',
+    addNewLevel: 'Add new level',
+    collectionName: 'Collection name…',
     cancel: 'Cancel',
     confirm: 'Confirm',
     save: 'Save',
@@ -259,6 +265,9 @@ export const en = {
     install: 'Install',
     uninstall: 'Uninstall',
     defaultDescription: 'Adds a new tool panel to the editor.',
+    crashed: '"{name}" plugin crashed',
+    crashedBody:
+      'This panel hit an error and was unloaded for this session. The rest of the editor is unaffected — reload to try again.',
   },
   sitePanel: {
     cameraSnapshot: 'Camera snapshot',
@@ -322,6 +331,11 @@ export const en = {
       nodeCount: '{count} nodes',
     },
     createNew: 'Create new',
+  },
+  commandPalette: {
+    typeNewName: 'Type a new name…',
+    filterOptions: 'Filter options…',
+    searchActions: 'Search actions…',
   },
   commands: {
     groups: {

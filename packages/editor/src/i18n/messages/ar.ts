@@ -6,6 +6,12 @@ import type { Messages } from './en'
 
 export const ar: Messages = {
   common: {
+    close: 'إغلاق',
+    sidebar: 'الشريط الجانبي',
+    toggleSidebar: 'إظهار/إخفاء الشريط الجانبي',
+    plugins: 'الإضافات',
+    addNewLevel: 'إضافة طابق جديد',
+    collectionName: 'اسم المجموعة…',
     cancel: 'إلغاء',
     confirm: 'تأكيد',
     save: 'حفظ',
@@ -255,6 +261,9 @@ export const ar: Messages = {
     install: 'تثبيت',
     uninstall: 'إلغاء التثبيت',
     defaultDescription: 'يضيف لوحة أدوات جديدة إلى المحرّر.',
+    crashed: 'تعطّلت إضافة "{name}"',
+    crashedBody:
+      'واجهت هذه اللوحة خطأً وأُلغي تحميلها لهذه الجلسة. بقية المحرّر غير متأثّرة — أعد التحميل للمحاولة مجدداً.',
   },
   sitePanel: {
     cameraSnapshot: 'لقطة الكاميرا',
@@ -318,6 +327,11 @@ export const ar: Messages = {
       nodeCount: '{count} عنصر',
     },
     createNew: 'إنشاء جديد',
+  },
+  commandPalette: {
+    typeNewName: 'اكتب اسماً جديداً…',
+    filterOptions: 'تصفية الخيارات…',
+    searchActions: 'البحث في الإجراءات…',
   },
   commands: {
     groups: {

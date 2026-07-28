@@ -1,5 +1,6 @@
 'use client'
 
+import { type TranslationKey, useI18n } from '../../../i18n'
 import type { AnyNodeId, LevelNode } from '@pascal-app/core'
 import { useScene } from '@pascal-app/core'
 import { useViewer } from '@pascal-app/viewer'
@@ -147,11 +148,11 @@ function OptionItem({
 // ---------------------------------------------------------------------------
 // Sub-page label map
 // ---------------------------------------------------------------------------
-const PAGE_LABEL: Record<string, string> = {
-  'wall-mode': 'Wall Mode',
-  'level-mode': 'Level Mode',
-  'rename-level': 'Rename Level',
-  'goto-level': 'Go to Level',
+const PAGE_LABEL: Record<string, TranslationKey> = {
+  'wall-mode': 'commands.wallMode',
+  'level-mode': 'commands.levelMode',
+  'rename-level': 'commands.renameLevel',
+  'goto-level': 'commands.gotoLevel',
 }
 
 // ---------------------------------------------------------------------------
@@ -189,6 +190,7 @@ function EmptyActionItem({ action }: { action: CommandPaletteEmptyAction }) {
 // Main component
 // ---------------------------------------------------------------------------
 export function CommandPalette({ emptyAction }: { emptyAction?: CommandPaletteEmptyAction }) {
+  const { t } = useI18n()
   const { open, setOpen, mode, setMode, pages, inputValue, setInputValue, navigateTo, goBack } =
     useCommandPalette()
 
@@ -317,7 +319,7 @@ export function CommandPalette({ emptyAction }: { emptyAction?: CommandPaletteEm
                   onClick={goBack}
                   type="button"
                 >
-                  {PAGE_LABEL[page] ?? views.get(page)?.label ?? page}
+                  {PAGE_LABEL[page] ? t(PAGE_LABEL[page]) : (views.get(page)?.label ?? page)}
                 </button>
               )}
               <Command.Input
@@ -326,10 +328,10 @@ export function CommandPalette({ emptyAction }: { emptyAction?: CommandPaletteEm
                 onValueChange={setInputValue}
                 placeholder={
                   page === 'rename-level'
-                    ? 'Type a new name…'
+                    ? t('commandPalette.typeNewName')
                     : page
-                      ? 'Filter options…'
-                      : 'Search actions…'
+                      ? t('commandPalette.filterOptions')
+                      : t('commandPalette.searchActions')
                 }
                 value={inputValue}
               />
