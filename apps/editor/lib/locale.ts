@@ -1,5 +1,8 @@
 import { cookies } from 'next/headers'
-import { DEFAULT_LOCALE, isLocale, type Locale, LOCALE_COOKIE } from '@pascal-app/editor'
+// Import from the lightweight i18n subpath (React + catalogs only) rather than
+// the main barrel, so this server-side helper doesn't pull the R3F/three.js
+// editor bundle into the root layout's server module graph.
+import { DEFAULT_LOCALE, isLocale, type Locale, LOCALE_COOKIE } from '@pascal-app/editor/i18n'
 
 // Reads the persisted UI locale from the request cookie so server components
 // (root layout, marketing/legal pages) can render the correct language and set

@@ -9,7 +9,7 @@
 // `loaded` guard inside `../lib/bootstrap` keeps the side effect
 // idempotent under HMR.
 import '../lib/bootstrap'
-import { I18nProvider, type Locale } from '@pascal-app/editor'
+import { I18nProvider, type Locale } from '@pascal-app/editor/i18n'
 import { type ReactNode, useEffect } from 'react'
 
 export function ClientBootstrap({
