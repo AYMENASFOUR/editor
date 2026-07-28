@@ -1,4 +1,5 @@
 'use client'
+import { useI18n } from '../../../i18n'
 
 import {
   type AnyNode,
@@ -41,6 +42,7 @@ function getScaleStatus(guide: GuideNode, scaleReferenceVisible: boolean) {
 }
 
 export function ReferencePanel() {
+  const { t } = useI18n()
   const selectedReferenceId = useEditor((s) => s.selectedReferenceId)
   const setSelectedReferenceId = useEditor((s) => s.setSelectedReferenceId)
   const guideUi = useEditor((s) =>
@@ -177,7 +179,7 @@ export function ReferencePanel() {
     >
       {!isScan && (
         <>
-          <PanelSection title="Image">
+          <PanelSection title={t('np.image')}>
             <input
               accept="image/*"
               className="hidden"
@@ -202,7 +204,7 @@ export function ReferencePanel() {
               <ActionButton
                 className="text-destructive hover:bg-destructive/10"
                 icon={<Trash2 className="h-3.5 w-3.5" />}
-                label="Delete"
+                label={t('np.delete')}
                 onClick={handleDeleteGuide}
               />
             </ActionGroup>
@@ -245,7 +247,7 @@ export function ReferencePanel() {
             )}
           </PanelSection>
 
-          <PanelSection title="Reference Scale">
+          <PanelSection title={t('np.referenceScale')}>
             <div className="flex items-center gap-2 rounded-md border border-border/50 bg-background/40 px-2.5 py-2 text-sm">
               <Ruler
                 className={cn(
@@ -285,7 +287,7 @@ export function ReferencePanel() {
                   onClick={() => setGuideScaleReferenceVisible(node.id, !scaleReferenceVisible)}
                 />
                 <ActionButton
-                  label="Clear Scale"
+                  label={t('np.clearScale')}
                   onClick={() => {
                     handleUpdate({ scaleReference: null } as Partial<GuideNode>)
                     // Calibrating auto-locked the guide; clearing the scale
@@ -297,11 +299,11 @@ export function ReferencePanel() {
             )}
           </PanelSection>
 
-          <PanelSection title="Quick Actions">
+          <PanelSection title={t('np.quickActions')}>
             <ActionGroup>
               <ActionButton
                 icon={<LocateFixed className="h-3.5 w-3.5" />}
-                label="Center"
+                label={t('np.center')}
                 onClick={() =>
                   handleUpdate({
                     position: [0, node.position[1], 0],
@@ -310,7 +312,7 @@ export function ReferencePanel() {
               />
               <ActionButton
                 icon={<RotateCcw className="h-3.5 w-3.5" />}
-                label="Reset Rotation"
+                label={t('np.resetRotation')}
                 onClick={() =>
                   handleUpdate({
                     rotation: [node.rotation[0], 0, node.rotation[2]],
@@ -321,7 +323,7 @@ export function ReferencePanel() {
             <ActionGroup>
               <ActionButton
                 icon={<Ruler className="h-3.5 w-3.5" />}
-                label="Reset Image Scale"
+                label={t('np.resetImageScale')}
                 onClick={() => handleUpdate({ scale: 1 } as Partial<GuideNode>)}
               />
             </ActionGroup>
@@ -329,7 +331,7 @@ export function ReferencePanel() {
         </>
       )}
 
-      <PanelSection title="Position">
+      <PanelSection title={t('np.position')}>
         <SliderControl
           label={
             <>
@@ -386,7 +388,7 @@ export function ReferencePanel() {
         />
       </PanelSection>
 
-      <PanelSection title="Rotation">
+      <PanelSection title={t('np.rotation')}>
         <SliderControl
           label={
             <>
@@ -426,7 +428,7 @@ export function ReferencePanel() {
         </div>
       </PanelSection>
 
-      <PanelSection title="Scale & Opacity">
+      <PanelSection title={t('np.scaleOpacity')}>
         <SliderControl
           label={
             <>
@@ -446,7 +448,7 @@ export function ReferencePanel() {
         />
 
         <SliderControl
-          label="Opacity"
+          label={t('np.opacity')}
           max={100}
           min={0}
           onChange={(v) => handleUpdate({ opacity: v })}

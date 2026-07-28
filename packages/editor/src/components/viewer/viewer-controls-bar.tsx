@@ -433,7 +433,7 @@ export const ViewerControlsBar = ({
           {/* Camera actions */}
           <ActionButton
             className="group hidden hover:bg-white/5 sm:inline-flex"
-            label="Orbit left"
+            label={t('np.orbitLeft')}
             onClick={() => emitter.emit('camera-controls:orbit-ccw')}
             size="icon"
             tooltipSide="top"
@@ -448,7 +448,7 @@ export const ViewerControlsBar = ({
 
           <ActionButton
             className="group hidden hover:bg-white/5 sm:inline-flex"
-            label="Orbit right"
+            label={t('np.orbitRight')}
             onClick={() => emitter.emit('camera-controls:orbit-cw')}
             size="icon"
             tooltipSide="top"
@@ -463,7 +463,7 @@ export const ViewerControlsBar = ({
 
           <ActionButton
             className="group hover:bg-white/5"
-            label="Top view"
+            label={t('np.topView')}
             onClick={() => emitter.emit('camera-controls:top-view')}
             size="icon"
             tooltipSide="top"

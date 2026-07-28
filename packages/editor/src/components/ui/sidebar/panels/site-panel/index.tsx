@@ -844,7 +844,7 @@ const LevelItem = memo(function LevelItem({
             <button
               className="flex w-full cursor-pointer items-center gap-2 rounded px-3 py-1.5 text-left text-sm transition-colors hover:bg-accent"
               onClick={() => handleDuplicateLevel()}
-              title="Duplicate level"
+              title={t('np.duplicateLevel')}
             >
               <Copy className="h-3.5 w-3.5" />
               Duplicate
@@ -852,7 +852,7 @@ const LevelItem = memo(function LevelItem({
             <button
               className="flex w-full cursor-pointer items-center gap-2 rounded px-3 py-1.5 text-left text-sm transition-colors hover:bg-accent"
               onClick={() => setDuplicateDialogOpen(true)}
-              title="Duplicate level with options"
+              title={t('np.duplicateLevelWithOptions')}
             >
               <Copy className="h-3.5 w-3.5" />
               Duplicate with options...
@@ -1293,7 +1293,7 @@ const MultiSelectionBadge = memo(function MultiSelectionBadge() {
         <button
           className="cursor-pointer rounded-full p-1.5 transition-colors hover:bg-primary-foreground/20"
           onClick={() => setSelection({ selectedIds: [] })}
-          title="Clear selection"
+          title={t('np.clearSelection')}
         >
           <X className="h-4 w-4" />
         </button>

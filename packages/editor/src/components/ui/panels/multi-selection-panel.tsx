@@ -1,4 +1,5 @@
 'use client'
+import { useI18n } from '../../../i18n'
 
 import { type AnyNodeId, useScene } from '@pascal-app/core'
 import { useViewer } from '@pascal-app/viewer'
@@ -20,6 +21,7 @@ import { formatSelectionBreakdown } from './selection-breakdown'
  * (e.g. community's "Save to my catalog").
  */
 export function MultiSelectionPanel({ footer }: { footer?: React.ReactNode }) {
+  const { t } = useI18n()
   const selectedIds = useViewer((s) => s.selection.selectedIds)
   const setSelection = useViewer((s) => s.setSelection)
   // String selector — recomputed on scene ticks, but the === compare keeps
@@ -41,13 +43,13 @@ export function MultiSelectionPanel({ footer }: { footer?: React.ReactNode }) {
         <ActionGroup>
           <ActionButton
             icon={<Copy className="h-4 w-4" />}
-            label="Duplicate"
+            label={t('np.duplicate')}
             onClick={() => duplicateSelectionAndPickUp()}
           />
           <ActionButton
             className="border-red-500/40 text-red-200 hover:bg-red-500/15"
             icon={<Trash2 className="h-4 w-4" />}
-            label="Delete"
+            label={t('np.delete')}
             onClick={() => deleteSelection()}
           />
         </ActionGroup>

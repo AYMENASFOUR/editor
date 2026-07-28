@@ -1,4 +1,5 @@
 'use client'
+import { useI18n } from '../../i18n'
 
 import {
   type AnyNode,
@@ -635,6 +636,7 @@ function FloorplanExtrusionControl({
   sceneRotationDeg: number
   unitsPerPixel: number
 }) {
+  const { t } = useI18n()
   const unit = useViewer((state) => state.unit)
   const extrusionHeight = useMeasurementDraft((state) => state.extrusionHeight)
   const points = useMeasurementDraft((state) => state.points)
@@ -703,7 +705,7 @@ function FloorplanExtrusionControl({
               H
             </span>
             <input
-              aria-label="Extrusion height"
+              aria-label={t('np.extrusionHeight')}
               className="h-8 w-full rounded-md border border-border bg-background pr-7 pl-6 text-sm outline-none focus:border-cyan-400"
               id="measurement-extrusion-height"
               inputMode="decimal"
@@ -753,6 +755,7 @@ function FloorplanExtrusionControl({
 }
 
 export function FloorplanMeasurementToolLayer() {
+  const { t } = useI18n()
   const groupRef = useRef<SVGGElement>(null)
   const vertexGesture = useRef<{
     pointerId: number

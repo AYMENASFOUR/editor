@@ -1,3 +1,4 @@
+import { useI18n } from '../../../i18n'
 import { Icon } from '@iconify/react'
 import type { ToolHint } from '@pascal-app/core'
 import { Fragment, useSyncExternalStore } from 'react'
@@ -170,6 +171,7 @@ function nextGridSnapStep(step: GridSnapStep): GridSnapStep {
 // The active interaction's snapping controls, scoped to its context (wall / item
 // / polygon) so each action shows only the modes that make sense for it.
 function SnappingChips({ context }: { context: SnapContext }) {
+  const { t } = useI18n()
   const snappingMode = useEditor((s) => s.snappingModeByContext[context])
   const setSnappingMode = useEditor((s) => s.setSnappingMode)
   const gridSnapStep = useEditor((s) => s.gridSnapStep)
@@ -246,6 +248,7 @@ function ContinuationChip({ context }: { context: ContinuationContext }) {
 }
 
 function FenceContinuationChips() {
+  const { t } = useI18n()
   const mode = useEditor((s) => s.getContinuation('fence'))
   const setContinuation = useEditor((s) => s.setContinuation)
   const curveStarted = useFenceCurveDraft((s) => s.pointCount > 0)
@@ -290,7 +293,7 @@ function FenceContinuationChips() {
       {isCurved && curveStarted ? (
         <ChipRow
           icon="lucide:circle-check"
-          label="Finish curve (or double-click)"
+          label={t('np.finishCurveHint')}
           shortcut="Enter"
         />
       ) : null}
@@ -309,6 +312,7 @@ const PAINT_SCOPE_ICONS: Record<PaintScope, string> = {
 // derived `paintHover` (scopes + labels), so it works for any kind without a
 // per-target table.
 function PaintScopeChip() {
+  const { t } = useI18n()
   // What the cursor is over (that's what the next click paints). `null` when not
   // over a paintable surface — including an item with no slots.
   const paintHover = useEditor((s) => s.paintHover)
@@ -320,13 +324,13 @@ function PaintScopeChip() {
   // Nothing to paint with yet (no material picked, not erasing) → the first step
   // is choosing a material, so say that before anything about scope or hovering.
   if (!(paintEraser || hasActivePaintMaterial(activePaintMaterial))) {
-    return <ChipRow icon="lucide:palette" label="Select a material to paint" />
+    return <ChipRow icon="lucide:palette" label={t('np.selectMaterialToPaint')} />
   }
 
   // Not over anything paintable → guide the user to hover, still teaching Shift.
   if (!paintHover) {
     return (
-      <ChipRow icon="lucide:mouse-pointer-click" label="Hover a surface to paint" shortcut="Shift" />
+      <ChipRow icon="lucide:mouse-pointer-click" label={t('np.hoverSurfaceToPaint')} shortcut="Shift" />
     )
   }
 

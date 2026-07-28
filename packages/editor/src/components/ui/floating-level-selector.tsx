@@ -236,7 +236,7 @@ function LevelRow({
               sideOffset={8}
             >
               <SliderControl
-                label="Level height"
+                label={t('np.levelHeight')}
                 max={6}
                 min={1}
                 onChange={(v) => updateNode(level.id, { height: v })}
