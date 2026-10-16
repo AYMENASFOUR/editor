@@ -198,7 +198,7 @@ describe('TASK-001 — shared Matbakh / Editor numerical kitchen fixtures', () =
             wall.startMm[1] + fromWallStartMm * dzMm / wallLengthMm,
             7,
           )
-          const inverse = planToRunLocal(run, ...[location[0], 0, location[2]])
+          const inverse = planToRunLocal(run, location[0], 0, location[2])
           expect(inverse[0]).toBeCloseTo(left, 10)
           expect(inverse[2]).toBeCloseTo(0, 10)
           expect((module.width * 1000) / 1000).toBeCloseTo(module.width, 10)
