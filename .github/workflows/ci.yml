@@ -26,3 +26,6 @@ jobs:
 
       - name: Type check
         run: bun run check-types
+
+      - name: TASK-001 shared cabinet fixtures
+        run: bun test packages/nodes/src/cabinet/__tests__/task-001-shared-fixtures.test.ts
