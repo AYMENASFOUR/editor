@@ -15,6 +15,8 @@ import { CabinetModuleNode, CabinetNode } from '../schema'
  *
  * Purpose: exercise Editor's REAL cabinet schema + run-layout maths on the SAME
  * widths, wall vectors and offsets. Editor uses metres, Matbakh uses millimetres.
+ * Matbakh's KitchenRun spans available wall space; Editor's CabinetNode
+ * represents only the OCCUPIED cabinet group. Remaining wall space is external.
  * Scope LIMIT: numerical runs and plan transforms, NOT UI/E2E, corner-solver,
  * 3D renderer, manufacturing or factory-approved dimensions.
  */
@@ -172,7 +174,9 @@ describe('TASK-001 — shared Matbakh / Editor numerical kitchen fixtures', () =
 
         // Editor's run local X is the wall vector. Its world-space X/Z
         // convention uses [cos(-rotation), -sin(-rotation)].
-        const runMidMm = (item.startMm + item.endMm) / 2
+        const occupiedMm = item.units.reduce((total, unit) => total + unit.widthMm, 0)
+        expect(occupiedMm).toBe(item.expectedOccupiedMm)
+        const runMidMm = item.startMm + occupiedMm / 2
         const run = CabinetNode.parse({
           id: `cabinet_${item.id}`,
           position: [
@@ -181,7 +185,7 @@ describe('TASK-001 — shared Matbakh / Editor numerical kitchen fixtures', () =
             (wall.startMm[1] + (runMidMm * dzMm) / wallLengthMm) / 1000,
           ],
           rotation: -Math.atan2(dzMm, dxMm),
-          width: spanMm / 1000,
+          width: occupiedMm / 1000,
           depth: 0.6,
           children: item.units.map((unit) => `cabinet-module_${unit.id}`),
         })
@@ -192,16 +196,17 @@ describe('TASK-001 — shared Matbakh / Editor numerical kitchen fixtures', () =
             width: unit.widthMm / 1000,
             depth: 0.6,
             carcassHeight: 0.72,
-            position: [(unit.offsetMm + unit.widthMm / 2 - spanMm / 2) / 1000, 0, 0],
+            position: [(unit.offsetMm + unit.widthMm / 2 - occupiedMm / 2) / 1000, 0, 0],
           }),
         )
         const before = JSON.stringify(modules)
         const extent = runLocalXExtent(modules)
         expect(extent).not.toBeNull()
         if (!extent) throw new Error('Empty run extent')
-        expect(extent.minX * 1000).toBeCloseTo(-spanMm / 2, 7)
+        expect(extent.minX * 1000).toBeCloseTo(-occupiedMm / 2, 7)
+        expect(run.width * 1000).toBeCloseTo(occupiedMm, 7)
         expect(extent.width * 1000).toBeCloseTo(item.expectedOccupiedMm, 7)
-        expect((spanMm / 2000 - extent.maxX) * 1000).toBeCloseTo(item.expectedRemainingMm, 7)
+        expect(spanMm - extent.width * 1000).toBeCloseTo(item.expectedRemainingMm, 7)
 
         const spans = getRunSpans(modules, { runTier: 'base' })
         expect(spans).toHaveLength(1)
