@@ -41,15 +41,22 @@ const FIXTURES: readonly Scenario[] = [
   {
     id: 'straight',
     walls: [{ id: 'S-W1', startMm: [0, 0], endMm: [3600, 0], thicknessMm: 150 }],
-    runs: [{
-      id: 'S-R1', wallId: 'S-W1', startMm: 150, endMm: 3300,
-      units: [
-        { id: 'S-B1', offsetMm: 0, widthMm: 600 },
-        { id: 'S-D1', offsetMm: 600, widthMm: 800 },
-        { id: 'S-S1', offsetMm: 1400, widthMm: 900 },
-      ],
-      expectedLengthMm: 3150, expectedOccupiedMm: 2300, expectedRemainingMm: 850,
-    }],
+    runs: [
+      {
+        id: 'S-R1',
+        wallId: 'S-W1',
+        startMm: 150,
+        endMm: 3300,
+        units: [
+          { id: 'S-B1', offsetMm: 0, widthMm: 600 },
+          { id: 'S-D1', offsetMm: 600, widthMm: 800 },
+          { id: 'S-S1', offsetMm: 1400, widthMm: 900 },
+        ],
+        expectedLengthMm: 3150,
+        expectedOccupiedMm: 2300,
+        expectedRemainingMm: 850,
+      },
+    ],
   },
   {
     id: 'L',
@@ -59,20 +66,30 @@ const FIXTURES: readonly Scenario[] = [
     ],
     runs: [
       {
-        id: 'L-R1', wallId: 'L-W1', startMm: 600, endMm: 3400,
+        id: 'L-R1',
+        wallId: 'L-W1',
+        startMm: 600,
+        endMm: 3400,
         units: [
           { id: 'L-B1', offsetMm: 0, widthMm: 800 },
           { id: 'L-B2', offsetMm: 800, widthMm: 600 },
         ],
-        expectedLengthMm: 2800, expectedOccupiedMm: 1400, expectedRemainingMm: 1400,
+        expectedLengthMm: 2800,
+        expectedOccupiedMm: 1400,
+        expectedRemainingMm: 1400,
       },
       {
-        id: 'L-R2', wallId: 'L-W2', startMm: 650, endMm: 2700,
+        id: 'L-R2',
+        wallId: 'L-W2',
+        startMm: 650,
+        endMm: 2700,
         units: [
           { id: 'L-B3', offsetMm: 0, widthMm: 600 },
           { id: 'L-B4', offsetMm: 600, widthMm: 450 },
         ],
-        expectedLengthMm: 2050, expectedOccupiedMm: 1050, expectedRemainingMm: 1000,
+        expectedLengthMm: 2050,
+        expectedOccupiedMm: 1050,
+        expectedRemainingMm: 1000,
       },
     ],
   },
@@ -85,29 +102,44 @@ const FIXTURES: readonly Scenario[] = [
     ],
     runs: [
       {
-        id: 'U-R1', wallId: 'U-W1', startMm: 600, endMm: 3200,
+        id: 'U-R1',
+        wallId: 'U-W1',
+        startMm: 600,
+        endMm: 3200,
         units: [
           { id: 'U-B1', offsetMm: 0, widthMm: 600 },
           { id: 'U-B2', offsetMm: 600, widthMm: 600 },
           { id: 'U-B3', offsetMm: 1200, widthMm: 600 },
         ],
-        expectedLengthMm: 2600, expectedOccupiedMm: 1800, expectedRemainingMm: 800,
+        expectedLengthMm: 2600,
+        expectedOccupiedMm: 1800,
+        expectedRemainingMm: 800,
       },
       {
-        id: 'U-R2', wallId: 'U-W2', startMm: 650, endMm: 2500,
+        id: 'U-R2',
+        wallId: 'U-W2',
+        startMm: 650,
+        endMm: 2500,
         units: [
           { id: 'U-B4', offsetMm: 0, widthMm: 800 },
           { id: 'U-B5', offsetMm: 800, widthMm: 600 },
         ],
-        expectedLengthMm: 1850, expectedOccupiedMm: 1400, expectedRemainingMm: 450,
+        expectedLengthMm: 1850,
+        expectedOccupiedMm: 1400,
+        expectedRemainingMm: 450,
       },
       {
-        id: 'U-R3', wallId: 'U-W3', startMm: 600, endMm: 3200,
+        id: 'U-R3',
+        wallId: 'U-W3',
+        startMm: 600,
+        endMm: 3200,
         units: [
           { id: 'U-B6', offsetMm: 0, widthMm: 600 },
           { id: 'U-B7', offsetMm: 600, widthMm: 900 },
         ],
-        expectedLengthMm: 2600, expectedOccupiedMm: 1500, expectedRemainingMm: 1100,
+        expectedLengthMm: 2600,
+        expectedOccupiedMm: 1500,
+        expectedRemainingMm: 1100,
       },
     ],
   },
@@ -144,37 +176,32 @@ describe('TASK-001 — shared Matbakh / Editor numerical kitchen fixtures', () =
         const run = CabinetNode.parse({
           id: `cabinet_${item.id}`,
           position: [
-            (wall.startMm[0] + runMidMm * dxMm / wallLengthMm) / 1000,
+            (wall.startMm[0] + (runMidMm * dxMm) / wallLengthMm) / 1000,
             0,
-            (wall.startMm[1] + runMidMm * dzMm / wallLengthMm) / 1000,
+            (wall.startMm[1] + (runMidMm * dzMm) / wallLengthMm) / 1000,
           ],
           rotation: -Math.atan2(dzMm, dxMm),
           width: spanMm / 1000,
           depth: 0.6,
           children: item.units.map((unit) => `cabinet-module_${unit.id}`),
         })
-        const modules = item.units.map((unit) => CabinetModuleNode.parse({
-          id: `cabinet-module_${unit.id}`,
-          parentId: run.id,
-          width: unit.widthMm / 1000,
-          depth: 0.6,
-          carcassHeight: 0.72,
-          position: [
-            (unit.offsetMm + unit.widthMm / 2 - spanMm / 2) / 1000,
-            0,
-            0,
-          ],
-        }))
+        const modules = item.units.map((unit) =>
+          CabinetModuleNode.parse({
+            id: `cabinet-module_${unit.id}`,
+            parentId: run.id,
+            width: unit.widthMm / 1000,
+            depth: 0.6,
+            carcassHeight: 0.72,
+            position: [(unit.offsetMm + unit.widthMm / 2 - spanMm / 2) / 1000, 0, 0],
+          }),
+        )
         const before = JSON.stringify(modules)
         const extent = runLocalXExtent(modules)
         expect(extent).not.toBeNull()
         if (!extent) throw new Error('Empty run extent')
         expect(extent.minX * 1000).toBeCloseTo(-spanMm / 2, 7)
         expect(extent.width * 1000).toBeCloseTo(item.expectedOccupiedMm, 7)
-        expect((spanMm / 2000 - extent.maxX) * 1000).toBeCloseTo(
-          item.expectedRemainingMm,
-          7,
-        )
+        expect((spanMm / 2000 - extent.maxX) * 1000).toBeCloseTo(item.expectedRemainingMm, 7)
 
         const spans = getRunSpans(modules, { runTier: 'base' })
         expect(spans).toHaveLength(1)
@@ -191,11 +218,11 @@ describe('TASK-001 — shared Matbakh / Editor numerical kitchen fixtures', () =
           const location = runLocalToPlan(run, [left, 0, 0])
           const fromWallStartMm = item.startMm + specification.offsetMm
           expect(location[0] * 1000).toBeCloseTo(
-            wall.startMm[0] + fromWallStartMm * dxMm / wallLengthMm,
+            wall.startMm[0] + (fromWallStartMm * dxMm) / wallLengthMm,
             7,
           )
           expect(location[2] * 1000).toBeCloseTo(
-            wall.startMm[1] + fromWallStartMm * dzMm / wallLengthMm,
+            wall.startMm[1] + (fromWallStartMm * dzMm) / wallLengthMm,
             7,
           )
           const inverse = planToRunLocal(run, location[0], 0, location[2])
