@@ -21,7 +21,15 @@ const browser = await chromium.launch({
 const context = await browser.newContext({ viewport: { width: 1440, height: 900 } })
 const page = await context.newPage()
 const errors = []
+const consoleProblems = []
+const navigation = []
 page.on('pageerror', error => errors.push(error.message))
+page.on('console', message => {
+  if (message.type() === 'error' || message.type() === 'warning') consoleProblems.push(message.text())
+})
+page.on('framenavigated', frame => {
+  if (frame === page.mainFrame()) navigation.push(frame.url())
+})
 const started = Date.now()
 const evidence = { origin: 'http://127.0.0.1:3002', browser: 'chromium', tests: [], limitations: ['No Straight/L/U 3D scene imported by this smoke; numerical suite runs separately.', 'No factory-approved manufacturing calculations evaluated.'] }
 try {
@@ -29,7 +37,24 @@ try {
   assert.equal(response?.status(), 200, 'Editor homepage must return HTTP 200')
   await page.getByText('Local editor — scenes are not saved.').waitFor({ timeout: 120_000 })
   evidence.tests.push('Editor actual localhost app loaded; unsaved-home-mode notice visible')
-  await page.getByRole('button', { name: '2D', exact: true }).click({ timeout: 90_000 })
+  // The Editor deliberately mounts its toolbar *under* a full-page scene-loading
+  // screen. A visible button is NOT yet actionable. Do not use force:true here:
+  // that would bypass a real user-facing loading failure.
+  const loadingOverlay = page.locator('div.fixed.inset-0.z-60')
+  try {
+    await loadingOverlay.waitFor({ state: 'hidden', timeout: 30_000 })
+  } catch (readinessError) {
+    evidence.readinessFailure = 'Editor loading overlay remained over toolbar for 30 seconds'
+    evidence.loaderVisible = await loadingOverlay.isVisible().catch(() => null)
+    evidence.currentUrl = page.url()
+    evidence.navigation = navigation
+    evidence.consoleProblems = consoleProblems.slice(-25)
+    evidence.overlayText = await loadingOverlay.innerText().catch(() => '')
+    evidence.failure = String(readinessError)
+    throw readinessError
+  }
+  evidence.tests.push('Scene loading overlay cleared; actual toolbar is actionable')
+  await page.getByRole('button', { name: '2D', exact: true }).click({ timeout: 20_000 })
   assert.equal(await page.getByRole('button', { name: '2D', exact: true }).getAttribute('aria-pressed'), 'true')
   await page.screenshot({ path: join(output, 'editor-empty-2d.png') })
   evidence.tests.push('2D mode interaction worked')
@@ -63,6 +88,15 @@ try {
 } catch (error) {
   evidence.failure = String(error)
   evidence.runtimeErrors = errors
+  evidence.consoleProblems = evidence.consoleProblems ?? consoleProblems.slice(-25)
+  evidence.navigation = evidence.navigation ?? navigation
+  console.error('TASK-001-B Editor UI diagnostic:', JSON.stringify({
+    stage: evidence.tests.at(-1) ?? 'startup',
+    failure: evidence.failure,
+    readiness: evidence.readinessFailure ?? null,
+    navigation: evidence.navigation.slice(-8),
+    consoleProblems: evidence.consoleProblems.slice(-12),
+  }))
   await page.screenshot({ path: join(output, 'failure.png') }).catch(() => undefined)
   await writeFile(join(output, 'results.json'), JSON.stringify(evidence, null, 2))
   throw error
