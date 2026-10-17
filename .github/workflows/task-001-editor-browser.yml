@@ -1,0 +1,65 @@
+name: TASK-001-B Editor actual browser UI (audit only)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  editor-ui-smoke:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.head_ref == 'audit/task-001-editor-parity' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout isolated Editor audit branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Configure Bun 1.3.0
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.3.0'
+      - name: Install Editor lockfile dependencies
+        run: bun install --frozen-lockfile
+      - name: Build shared packages for actual local Editor UI
+        run: |
+          set -euo pipefail
+          bun --cwd packages/core run build
+          bun --cwd packages/viewer run build
+          bun --cwd packages/editor run build
+          bun --cwd packages/nodes run build
+          bun --cwd packages/mcp run build
+      - name: Install pinned standalone browser harness outside repo
+        run: |
+          npm install --prefix /tmp/task001-editor-playwright --no-save --ignore-scripts playwright@1.56.1
+          /tmp/task001-editor-playwright/node_modules/.bin/playwright install --with-deps chromium
+      - name: Start disposable localhost Editor (no deployment, test database only)
+        run: |
+          set -euo pipefail
+          touch .env.local
+          PORT=3002 bun --cwd apps/editor dev > task-001-editor-dev.log 2>&1 &
+          echo $! > task-001-editor-server.pid
+          for i in $(seq 1 90); do
+            if curl --fail --silent http://127.0.0.1:3002/ > /dev/null; then
+              echo 'Editor localhost ready'
+              exit 0
+            fi
+            sleep 2
+          done
+          cat task-001-editor-dev.log
+          exit 1
+      - name: Exercise real 2D, split, 3D and scene save/reopen
+        run: node scripts/task-001-editor-browser-smoke.mjs
+      - name: Capture photos, test metrics and debugging logs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: task-001-b-editor-browser-evidence
+          path: |
+            task-001-editor-browser-evidence/
+            task-001-editor-dev.log
+          if-no-files-found: warn
+          retention-days: 7
