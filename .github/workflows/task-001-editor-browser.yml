@@ -22,8 +22,10 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: '1.3.0'
-      - name: Install Editor lockfile dependencies
-        run: bun install --frozen-lockfile
+      - name: Install locked workspace dependencies using the hoisted linker
+        # The default Bun isolated layout passed TS checks but left the Next
+        # Turbopack runtime unable to resolve @pascal-app/viewer.
+        run: bun install --frozen-lockfile --linker hoisted
       - name: Build shared packages for actual local Editor UI
         run: |
           set -euo pipefail
@@ -32,6 +34,13 @@ jobs:
           bun --cwd packages/editor run build
           bun --cwd packages/nodes run build
           bun --cwd packages/mcp run build
+      - name: Verify package resolution before starting Next
+        run: |
+          set -euo pipefail
+          test -f packages/viewer/dist/index.js
+          node -e "console.log('Viewer resolved:', require.resolve('@pascal-app/viewer', { paths: ['./packages/editor', './apps/editor'] }))"
+          ls -la node_modules/@pascal-app/viewer
+          ls -la packages/editor/node_modules/@pascal-app/viewer || true
       - name: Install pinned standalone browser harness outside repo
         run: |
           npm install --prefix /tmp/task001-editor-playwright --no-save --ignore-scripts playwright@1.56.1
