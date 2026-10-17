@@ -1,0 +1,79 @@
+name: TASK-001-B Editor actual browser UI (audit only)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  editor-ui-smoke:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.head_ref == 'audit/task-001-editor-parity' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout isolated Editor audit branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Configure Bun 1.3.0
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.3.0'
+      - name: Install locked workspace dependencies using the hoisted linker
+        # Use a hoisted, locked workspace install for reproducible package lookup.
+        # Previous CI invoked bun --cwd <path> run build incorrectly (printed help
+        # and exited 0 without emitting dist/); the build commands below use cd.
+        run: bun install --frozen-lockfile --linker hoisted
+      - name: Actually compile shared packages with the correct Bun working directory
+        run: |
+          set -euo pipefail
+          (cd packages/core && bun run build)
+          (cd packages/viewer && bun run build)
+          (cd packages/nodes && bun run build)
+          (cd packages/mcp && bun run build)
+      - name: Verify package resolution before starting Next
+        run: |
+          set -euo pipefail
+          test -f packages/viewer/dist/index.js
+          node -e "console.log('Viewer resolved:', require.resolve('@pascal-app/viewer', { paths: ['./packages/editor', './apps/editor'] }))"
+          ls -la node_modules/@pascal-app/viewer
+          ls -la packages/editor/node_modules/@pascal-app/viewer || true
+      - name: Install pinned standalone browser harness outside repo
+        run: |
+          npm install --prefix /tmp/task001-editor-playwright --no-save --ignore-scripts playwright@1.56.1
+          /tmp/task001-editor-playwright/node_modules/.bin/playwright install --with-deps chromium
+      - name: Start disposable localhost Editor (no deployment, test database only)
+        run: |
+          set -euo pipefail
+          touch .env.local
+          (cd apps/editor && PORT=3002 bun run dev) > task-001-editor-dev.log 2>&1 &
+          echo $! > task-001-editor-server.pid
+          for i in $(seq 1 60); do
+            if curl --fail --silent --max-time 2 http://127.0.0.1:3002/ > /dev/null; then
+              echo 'Editor localhost ready'
+              exit 0
+            fi
+            if ! kill -0 "$(cat task-001-editor-server.pid)" 2>/dev/null; then
+              echo 'Editor server exited before readiness'
+              break
+            fi
+            sleep 2
+          done
+          echo 'Editor server diagnostics (bounded to last 120 lines):'
+          tail -n 120 task-001-editor-dev.log || true
+          exit 1
+      - name: Exercise real 2D, split, 3D and scene save/reopen
+        run: node scripts/task-001-editor-browser-smoke.mjs
+      - name: Capture photos, test metrics and debugging logs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: task-001-b-editor-browser-evidence
+          path: |
+            task-001-editor-browser-evidence/
+            task-001-editor-dev.log
+          if-no-files-found: warn
+          retention-days: 7
