@@ -42,14 +42,19 @@ jobs:
           touch .env.local
           PORT=3002 bun --cwd apps/editor dev > task-001-editor-dev.log 2>&1 &
           echo $! > task-001-editor-server.pid
-          for i in $(seq 1 90); do
-            if curl --fail --silent http://127.0.0.1:3002/ > /dev/null; then
+          for i in $(seq 1 60); do
+            if curl --fail --silent --max-time 2 http://127.0.0.1:3002/ > /dev/null; then
               echo 'Editor localhost ready'
               exit 0
             fi
+            if ! kill -0 "$(cat task-001-editor-server.pid)" 2>/dev/null; then
+              echo 'Editor server exited before readiness'
+              break
+            fi
             sleep 2
           done
-          cat task-001-editor-dev.log
+          echo 'Editor server diagnostics (bounded to last 120 lines):'
+          tail -n 120 task-001-editor-dev.log || true
           exit 1
       - name: Exercise real 2D, split, 3D and scene save/reopen
         run: node scripts/task-001-editor-browser-smoke.mjs
