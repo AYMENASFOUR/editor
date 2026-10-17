@@ -23,17 +23,17 @@ jobs:
         with:
           bun-version: '1.3.0'
       - name: Install locked workspace dependencies using the hoisted linker
-        # The default Bun isolated layout passed TS checks but left the Next
-        # Turbopack runtime unable to resolve @pascal-app/viewer.
+        # Use a hoisted, locked workspace install for reproducible package lookup.
+        # Previous CI invoked bun --cwd <path> run build incorrectly (printed help
+        # and exited 0 without emitting dist/); the build commands below use cd.
         run: bun install --frozen-lockfile --linker hoisted
-      - name: Build shared packages for actual local Editor UI
+      - name: Actually compile shared packages with the correct Bun working directory
         run: |
           set -euo pipefail
-          bun --cwd packages/core run build
-          bun --cwd packages/viewer run build
-          bun --cwd packages/editor run build
-          bun --cwd packages/nodes run build
-          bun --cwd packages/mcp run build
+          (cd packages/core && bun run build)
+          (cd packages/viewer && bun run build)
+          (cd packages/nodes && bun run build)
+          (cd packages/mcp && bun run build)
       - name: Verify package resolution before starting Next
         run: |
           set -euo pipefail
@@ -49,7 +49,7 @@ jobs:
         run: |
           set -euo pipefail
           touch .env.local
-          PORT=3002 bun --cwd apps/editor dev > task-001-editor-dev.log 2>&1 &
+          (cd apps/editor && PORT=3002 bun run dev) > task-001-editor-dev.log 2>&1 &
           echo $! > task-001-editor-server.pid
           for i in $(seq 1 60); do
             if curl --fail --silent --max-time 2 http://127.0.0.1:3002/ > /dev/null; then
